@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RENEW Total Consumption</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* RENEW Design System Color Palette based on your screenshot */
+        :root {
+            --color-renew-blue: #213958;
+            --color-renew-green: #5C8E67; /* Updated to match the PDF */
+            --color-renew-gray: #8CBCBC; /* Updated to match the PDF */
+            --color-renew-red: #D3464E;  /* Updated to match the PDF */
+            --color-renew-yellow: #FFC107; /* Kept for the accent color used in the previous design */
+            --color-neutral-white: #FFFFFF;
+            --color-light-gray: #f9fafb;
+            --color-text-light: #6b7280;
+        }
+
+        /* Utility classes based on the design system colors */
+        .text-renew-blue { color: var(--color-renew-blue); }
+        .bg-renew-green { background-color: var(--color-renew-green); }
+        .text-renew-gray { color: var(--color-renew-gray); }
+        .text-renew-red { color: var(--color-renew-red); }
+        .bg-renew-red { background-color: var(--color-renew-red); }
+        .bg-renew-yellow { background-color: var(--color-renew-yellow); }
+        .bg-light-gray { background-color: var(--color-light-gray); }
+        .text-renew-yellow { color: var(--color-renew-yellow); }
+        .text-neutral-white { color: var(--color-neutral-white); }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--color-renew-blue), #3b5072);
+            color: var(--color-neutral-white);
+        }
+        
+        /* Glassmorphism card component */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Nav Item Component */
+        .ds-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-text-light);
+            transition: color 0.2s ease-in-out;
+        }
+        .ds-nav-item.active {
+            color: var(--color-neutral-white);
+            font-weight: 600;
+        }
+        
+        /* General layout improvements */
+        .ds-time-toggle {
+            display: flex;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 9999px;
+            padding: 0.25rem;
+            justify-content: space-between;
+        }
+        .ds-time-button {
+            flex: 1;
+            padding: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--color-renew-gray);
+            border-radius: 9999px;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .ds-time-button.active {
+            background-color: var(--color-renew-green);
+            color: var(--color-neutral-white);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Styling for the comparison bars */
+        .comparison-bar-bg {
+            background: rgba(255, 255, 255, 0.2);
+            height: 1rem;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .comparison-bar {
+            height: 100%;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        /* Custom toggle switch based on the design system */
+        .ds-toggle-track {
+            background-color: var(--color-renew-gray);
+            transition: background-color 0.2s ease-in-out;
+        }
+        .ds-toggle-track:checked {
+            background-color: var(--color-renew-green);
+        }
+        
+        /* Chart Canvas Styling */
+        #usage-chart {
+            width: 100%;
+            height: 200px;
+        }
+        
+        .grid-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .cta-button {
+            background-color: var(--color-renew-blue);
+            color: var(--color-neutral-white);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .cta-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+
+        /* New styles for category buttons and active state */
+        .category-button {
+            @apply flex flex-col items-center justify-center space-y-2 p-4 rounded-xl cursor-pointer;
+            transition: all 0.3s ease-in-out;
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+        .category-button:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .category-button.active {
+            background-color: var(--color-renew-green);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Responsive grid layout for categories */
+        @media (min-width: 640px) {
+            #category-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (min-width: 768px) {
+            #category-container {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <main class="flex-grow mx-auto max-w-4xl w-full p-4 md:p-8">
+
+        <header class="flex flex-col items-center relative py-4 mb-4">
+            <a href="#" onclick="history.back(); return false;" class="absolute left-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-renew-gray" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+            </a>
+            <h1 class="text-3xl font-bold text-neutral-white">Total Consumption</h1>
+        </header>
+        
+        <div class="glass-card p-4 md:p-6 mb-6">
+            <div class="ds-time-toggle mb-4" id="time-toggle-group">
+                <button class="ds-time-button active" data-timeframe="daily">Day</button>
+                <button class="ds-time-button" data-timeframe="weekly">Week</button>
+                <button class="ds-time-button" data-timeframe="monthly">Month</button>
+            </div>
+
+            <div class="flex flex-col items-center justify-center text-center mt-6 mb-6">
+                <div class="flex items-center space-x-4 mb-4">
+                    <button id="prev-date-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-renew-gray" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <span class="text-neutral-white font-bold text-lg" id="date-label"></span>
+                    <button id="next-date-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-renew-gray" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <span id="kwh-label" class="text-neutral-white font-bold">kWh</span>
+                    <label for="toggle-switch" class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" value="" id="toggle-switch" class="sr-only peer" checked>
+                        <div class="w-11 h-6 ds-toggle-track rounded-full peer peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-renew-green/20 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-renew-green"></div>
+                    </label>
+                    <span id="cost-label" class="text-renew-gray font-bold">€</span>
+                </div>
+
+                <div class="mt-8">
+                    <p class="text-renew-gray font-medium text-sm" id="total-label">Total Daily Consumption</p>
+                    <p class="text-neutral-white font-bold text-3xl mt-1" id="total-value"></p>
+                </div>
+            </div>
+        </div>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-bold text-neutral-white mb-4">Usage Over Time</h2>
+            <div class="glass-card p-4">
+                <canvas id="usage-chart"></canvas>
+            </div>
+        </section>
+        
+        <section class="mb-6">
+            <h2 class="text-xl font-bold text-neutral-white mb-4">Compare your usage</h2>
+            <div class="glass-card p-4">
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <span id="prev-period-label" class="text-renew-gray font-medium text-sm"></span>
+                        <span id="prev-period-value" class="text-renew-gray font-bold text-sm"></span>
+                    </div>
+                    <div class="comparison-bar-bg">
+                        <div id="prev-bar" class="comparison-bar bg-renew-green"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span id="current-period-label" class="text-renew-gray font-medium text-sm"></span>
+                        <span id="current-period-value" class="text-renew-yellow font-bold text-sm"></span>
+                    </div>
+                    <div class="comparison-bar-bg">
+                        <div id="current-bar" class="comparison-bar bg-renew-yellow"></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-sm text-center text-renew-gray mt-4" id="comparison-text"></p>
+        </section>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-bold text-neutral-white mb-4">Cost Breakdown</h2>
+            <div class="glass-card p-4">
+                <div class="space-y-4">
+                    <div class="grid-item">
+                        <p class="text-renew-gray font-medium text-sm">Total Cost for Period</p>
+                        <p id="total-cost" class="font-bold text-neutral-white"></p>
+                    </div>
+                    <div class="grid-item">
+                        <p class="text-renew-gray font-medium text-sm">Average Cost per kWh</p>
+                        <p id="cost-per-kwh" class="font-bold text-neutral-white"></p>
+                    </div>
+                    <div class="grid-item border-b-0">
+                        <p class="text-renew-gray font-medium text-sm">Projected Monthly Cost</p>
+                        <p id="projected-cost" class="font-bold text-neutral-white"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-bold text-neutral-white mb-4">Where Your Energy Goes</h2>
+            <div id="category-container" class="grid grid-cols-2 gap-4">
+                <div class="category-button active" data-category="heating">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-renew-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 0 1-9-9c0-6.1 7.5-10.4 9-15 1.5 4.6 9 8.9 9 15a9 9 0 0 1-9 9z"/><path d="M12 21v-8"/></svg>
+                    <span class="text-sm font-semibold">Heating</span>
+                </div>
+                <div class="category-button" data-category="cooling">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-renew-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8a7 7 0 0 1 14 0z"/><path d="M17 11v8a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-8a7 7 0 0 1 14 0z"/><path d="M12 22v-4"/><path d="M7 22v-4"/><path d="M17 22v-4"/></svg>
+                    <span class="text-sm font-semibold">Cooling</span>
+                </div>
+                <div class="category-button" data-category="lighting">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-renew-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18a3 3 0 0 1 6 0"/><path d="M10 22h4"/><path d="M12 12a4 4 0 0 0 0 8"/><path d="M12 12V3"/><path d="M10 12l2-3 2 3"/><path d="M16 12h5"/><path d="M19 15l2-3-2-3"/><path d="M8 12H3"/><path d="M5 15l-2-3 2-3"/><path d="M12 18v4"/><path d="M12 12l-2 3 2 3"/></svg>
+                    <span class="text-sm font-semibold">Lighting</span>
+                </div>
+                <div class="category-button" data-category="entertainment">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-renew-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13.5a1.5 1.5 0 0 0-1.5 1.5c0 .8.7 1.5 1.5 1.5s1.5-.7 1.5-1.5a1.5 1.5 0 0 0-1.5-1.5z"/><path d="M3 13.5a1.5 1.5 0 0 0-1.5 1.5c0 .8.7 1.5 1.5 1.5s1.5-.7 1.5-1.5a1.5 1.5 0 0 0-1.5-1.5z"/><path d="M12 13.5a1.5 1.5 0 0 0-1.5 1.5c0 .8.7 1.5 1.5 1.5s1.5-.7 1.5-1.5a1.5 1.5 0 0 0-1.5-1.5z"/><path d="M21 15v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1"/><path d="M12 15V8a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v7"/><path d="M12 15V8a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v7"/></svg>
+                    <span class="text-sm font-semibold">Entertainment</span>
+                </div>
+                <div class="category-button" data-category="appliances">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-renew-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><path d="M18 14h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2z"/><path d="M10 2h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><path d="M10 14h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2z"/></svg>
+                    <span class="text-sm font-semibold">Appliances</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-bold text-neutral-white mb-4">Top Energy Users</h2>
+            <div class="glass-card p-4">
+                <div id="top-users-list" class="space-y-4">
+                    </div>
+            </div>
+        </section>
+        
+    </main>
+
+     <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg border-t-2 border-gray-100 sm-hidden">
+        <nav class="flex justify-around items-center h-16">
+            <a href="/home.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium focus:outline-none text-[#94A3B8] hover:text-[#22C55E] active" data-tab="home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <path d="M9 22V12h6v10"></path>
+                </svg>
+                <span class="mt-1 text-xs">Home</span>
+            </a>
+            <a href="/devices.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-[#94A3B8] hover:text-[#22C55E] focus:outline-none" data-tab="devices">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 11V5.5L12 2 8 5.5V11H6V22h12V11z" />
+                </svg>
+                <span class="mt-1 text-xs">Devices</span>
+            </a>
+            <a href="/community.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-[#94A3B8] hover:text-[#22C55E] focus:outline-none" data-tab="community">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 19.22H5.78a2 2 0 0 1-1.74-2.8l2.64-7.55a2 2 0 0 1 1.74-1.65h10.42a2 2 0 0 1 1.74 1.65l2.64 7.55a2 2 0 0 1-1.74 2.8z" />
+                    <circle cx="12" cy="7" r="2" />
+                </svg>
+                <span class="mt-1 text-xs">Community</span>
+            </a>
+            <a href="/savings.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-[#94A3B8] hover:text-[#22C55E] focus:outline-none" data-tab="savings">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+                <span class="mt-1 text-xs">Savings</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // State variables
+            let currentUnit = 'kwh';
+            let currentTimeframe = 'daily';
+            let currentDate = new Date('2025-09-02T12:00:00'); 
+            
+            // Get the HTML elements
+            const toggleSwitch = document.getElementById('toggle-switch');
+            const totalValueElement = document.getElementById('total-value');
+            const totalLabelElement = document.getElementById('total-label');
+            const costLabel = document.getElementById('cost-label');
+            const kwhLabel = document.getElementById('kwh-label');
+            const dateLabel = document.getElementById('date-label');
+            const prevPeriodLabel = document.getElementById('prev-period-label');
+            const prevPeriodValue = document.getElementById('prev-period-value');
+            const prevBar = document.getElementById('prev-bar');
+            const currentPeriodLabel = document.getElementById('current-period-label');
+            const currentPeriodValue = document.getElementById('current-period-value');
+            const currentBar = document.getElementById('current-bar');
+            const comparisonText = document.getElementById('comparison-text');
+            const timeToggleGroup = document.getElementById('time-toggle-group');
+            const prevDateBtn = document.getElementById('prev-date-btn');
+            const nextDateBtn = document.getElementById('next-date-btn');
+            const totalCostEl = document.getElementById('total-cost');
+            const costPerKwhEl = document.getElementById('cost-per-kwh');
+            const projectedCostEl = document.getElementById('projected-cost');
+            const chartCanvas = document.getElementById('usage-chart');
+            const ctx = chartCanvas.getContext('2d');
+            
+            let usageChart = null; 
+
+            // Unit info for display
+            const unitInfo = {
+                cost: { symbol: '€', label: 'Cost' },
+                kwh: { symbol: 'kWh', label: 'kWh' }
+            };
+
+            // Data for categories and top users
+            const categoryData = {
+                heating: [
+                    { name: 'Radiator', kwh: 3.5, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2V4h2v2zm-2 2h2v14h-2V8zm-2-2h-2V4h2v2zM14 8h2v14h-2V8zM12 6h-2V4h2v2zM8 8h2v14H8V8zM6 6H4V4h2v2zM4 8h2v14H4V8z"/></svg>` },
+                    { name: 'Water Heater', kwh: 2.1, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a9 9 0 0 0-9 9c0 4.1 3.5 7.6 9 13.5a1 1 0 0 0 2 0c5.5-5.9 9-9.4 9-13.5a9 9 0 0 0-9-9zm0 16a6 6 0 0 1-6-6c0-3.3 3.6-6 6-6s6 2.7 6 6-3.7 6-6 6z"/><path d="M12 12a1 1 0 0 1-1-1v-2a1 1 0 0 1 2 0v2a1 1 0 0 1-1 1z"/></svg>` },
+                    { name: 'Electric Blanket', kwh: 0.5, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12A10 10 0 0 0 12 2v10a10 10 0 0 0 10 10zM12 2v10a10 10 0 0 1 10 10A10 10 0 0 1 12 2z"/><path d="M12 2v10a10 10 0 0 1 10 10A10 10 0 0 1 12 2z"/><path d="M12 2v10a10 10 0 0 1 10 10A10 10 0 0 1 12 2z"/></svg>` },
+                ],
+                cooling: [
+                    { name: 'Air Conditioner', kwh: 4.2, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10V12a10 10 0 0 0 10-10A10 10 0 0 0 12 2zM12 14v8a10 10 0 0 0 10-10H12v-2z"/><path d="M12 14v8a10 10 0 0 0 10-10H12v-2z"/><path d="M12 14v8a10 10 0 0 0 10-10H12v-2z"/></svg>` },
+                    { name: 'Portable Fan', kwh: 0.1, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-9 5.5l.2.4L5.6 12a.5.5 0 0 0 .8.1l4.4-4.5V17a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V7.6l4.4 4.4a.5.5 0 0 0 .8-.1l2.4-4.1A10 10 0 0 0 12 2zM12 2v15a1 1 0 0 1-1-1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-2v1z"/></svg>` },
+                    { name: 'Dehumidifier', kwh: 0.8, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M16 14h-2v-2h2v2zM16 10h-2V8h2v2zM16 6h-2V4h2v2zM12 14h-2v-2h2v2zM12 10h-2V8h2v2zM12 6h-2V4h2v2zM8 14H6v-2h2v2zM8 10H6V8h2v2zM8 6H6V4h2v2z"/></svg>` },
+                ],
+                lighting: [
+                    { name: 'Living Room Lights', kwh: 0.3, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a9 9 0 0 0-9 9c0 3.3 1.3 6.3 3.5 8.5L12 22l5.5-2.5A9 9 0 0 0 12 2zm0 16a7 7 0 0 1-7-7c0-2.6 1-5 2.8-6.8L12 4.4l4.2 4.2C18 11 19 13.4 19 16a7 7 0 0 1-7 2z"/></svg>` },
+                    { name: 'Kitchen Lights', kwh: 0.2, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a9 9 0 0 0-9 9c0 3.3 1.3 6.3 3.5 8.5L12 22l5.5-2.5A9 9 0 0 0 12 2zm0 16a7 7 0 0 1-7-7c0-2.6 1-5 2.8-6.8L12 4.4l4.2 4.2C18 11 19 13.4 19 16a7 7 0 0 1-7 2z"/></svg>` },
+                    { name: 'Outdoor Lights', kwh: 0.5, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a9 9 0 0 0-9 9c0 3.3 1.3 6.3 3.5 8.5L12 22l5.5-2.5A9 9 0 0 0 12 2zm0 16a7 7 0 0 1-7-7c0-2.6 1-5 2.8-6.8L12 4.4l4.2 4.2C18 11 19 13.4 19 16a7 7 0 0 1-7 2z"/></svg>` },
+                ],
+                entertainment: [
+                    { name: 'Television', kwh: 0.6, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5v12h16V6z"/><path d="M12 11l8-5v12H4V6l8 5z"/></svg>` },
+                    { name: 'Gaming Console', kwh: 1.2, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-2 18H8a.9.9 0 0 1-.9-.9V17a.9.9 0 0 1 .9-.9h8.2a.9.9 0 0 1 .9.9v2.1a.9.9 0 0 1-.9.9z"/></svg>` },
+                    { name: 'Stereo System', kwh: 0.4, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M22 10.5V12a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2c2.14 0 4.09.73 5.66 1.94L16 4.6l-1 1c-1.25-.67-2.67-1.1-4.14-1.1a8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8c0-1.47-.43-2.89-1.1-4.14l-1 1-1.66-1.66zM15 8l-3 3 3 3 3-3-3-3z"/></svg>` },
+                ],
+                appliances: [
+                    { name: 'Refrigerator', kwh: 1.5, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-3.31 0-6 2.69-6 6v14h12V8c0-3.31-2.69-6-6-6zm0 18H8v-4h4v4zm4 0h-2v-4h2v4zm2-6h-2V8h2v6zM6 8h-2v6h2V8z"/></svg>` },
+                    { name: 'Washing Machine', kwh: 2.0, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6a2 2 0 0 0-2 2v18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-6 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>` },
+                    { name: 'Dishwasher', kwh: 1.8, icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-renew-green" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-1.1 0-2 .9-2 2v2H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3V4c0-1.1-.9-2-2-2zM7 18V8h10l-1 10H7z"/><path d="M12 4h-2v2h2V4z"/></svg>` },
+                ],
+            };
+
+            const topUsersList = document.getElementById('top-users-list');
+            const categoryButtons = document.querySelectorAll('.category-button');
+
+            /**
+             * Renders the list of top energy users for a given category.
+             * @param {string} category The category key (e.g., 'heating').
+             */
+            function renderTopUsers(category) {
+                topUsersList.innerHTML = ''; 
+                const users = categoryData[category] || [];
+                users.forEach(user => {
+                    const userItem = document.createElement('div');
+                    userItem.className = 'flex items-center justify-between p-3 rounded-lg bg-white/10';
+                    userItem.innerHTML = `
+                        <div class="flex items-center space-x-4">
+                            ${user.icon}
+                            <span class="text-sm font-medium">${user.name}</span>
+                        </div>
+                        <span class="text-sm font-semibold text-renew-yellow">${user.kwh.toFixed(1)} kWh</span>
+                    `;
+                    topUsersList.appendChild(userItem);
+                });
+            }
+
+            // Add event listeners to category buttons
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove 'active' class from all buttons
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add 'active' class to the clicked button
+                    button.classList.add('active');
+                    // Render top users for the selected category
+                    const category = button.getAttribute('data-category');
+                    renderTopUsers(category);
+                });
+            });
+
+
+            /**
+             * Generates mock data for total consumption based on a timeframe.
+             * Values will fluctuate to provide a dynamic feel.
+             * @param {string} timeframe The timeframe ('daily', 'weekly', 'monthly').
+             * @returns {{current: {cost: number, kwh: number}, previous: {cost: number, kwh: number}}}
+             */
+            function generateData(timeframe) {
+                const baseDailyKwh = 10.5; // Base average daily household consumption
+                const costPerKwh = 0.20;
+
+                let currentKwh, prevKwh;
+
+                switch (timeframe) {
+                    case 'daily':
+                        currentKwh = baseDailyKwh * (1 + (Math.random() - 0.5) * 0.4);
+                        prevKwh = baseDailyKwh * (1 + (Math.random() - 0.5) * 0.4);
+                        break;
+                    case 'weekly':
+                        currentKwh = baseDailyKwh * 7 * (1 + (Math.random() - 0.5) * 0.3);
+                        prevKwh = baseDailyKwh * 7 * (1 + (Math.random() - 0.5) * 0.3);
+                        break;
+                    case 'monthly':
+                        currentKwh = baseDailyKwh * 30 * (1 + (Math.random() - 0.5) * 0.2);
+                        prevKwh = baseDailyKwh * 30 * (1 + (Math.random() - 0.5) * 0.2);
+                        break;
+                }
+                const currentCost = currentKwh * costPerKwh;
+                const prevCost = prevKwh * costPerKwh;
+
+                return {
+                    current: { cost: currentCost, kwh: currentKwh },
+                    previous: { cost: prevCost, kwh: prevKwh }
+                };
+            }
+
+            /**
+             * Generates mock data for the chart based on the timeframe.
+             * @param {string} timeframe The timeframe.
+             * @returns {{labels: string[], data: number[]}}
+             */
+            function generateChartData(timeframe) {
+                const dailyData = {
+                    labels: ['12 AM', '3 AM', '6 AM', '9 AM', '12 PM', '3 PM', '6 PM', '9 PM'],
+                    data: [1.2, 0.8, 0.5, 1.5, 2.0, 3.5, 4.0, 2.5]
+                };
+                const weeklyData = {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    data: [12, 10, 15, 18, 20, 25, 22]
+                };
+                const monthlyData = {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    data: [80, 75, 90, 85]
+                };
+
+                switch (timeframe) {
+                    case 'daily': return dailyData;
+                    case 'weekly': return weeklyData;
+                    case 'monthly': return monthlyData;
+                }
+            }
+
+            /**
+             * Updates the chart with new data based on the selected timeframe.
+             * @param {string} timeframe The selected timeframe ('daily', 'weekly', 'monthly').
+             */
+            function updateChart(timeframe) {
+                const chartData = generateChartData(timeframe);
+                if (usageChart) {
+                    usageChart.data.labels = chartData.labels;
+                    usageChart.data.datasets[0].data = chartData.data;
+                    usageChart.update();
+                } else {
+                    usageChart = new Chart(ctx, {
+                        type: 'bar', 
+                        data: {
+                            labels: chartData.labels,
+                            datasets: [{
+                                label: 'Consumption',
+                                data: chartData.data,
+                                backgroundColor: 'rgba(255, 193, 7, 0.8)', 
+                                borderColor: 'rgba(255, 193, 7, 1)', 
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                    callbacks: {
+                                        label: function(context) {
+                                            const value = context.parsed.y;
+                                            return `${value.toFixed(1)} ${unitInfo[currentUnit].symbol}`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.1)',
+                                        borderColor: 'rgba(255, 255, 255, 0.2)'
+                                    },
+                                    ticks: {
+                                        color: 'rgba(255, 255, 255, 0.8)'
+                                    }
+                                },
+                                y: {
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.1)',
+                                        borderColor: 'rgba(255, 255, 255, 0.2)'
+                                    },
+                                    ticks: {
+                                        color: 'rgba(255, 255, 255, 0.8)',
+                                        callback: function(value) {
+                                            return `${value.toFixed(0)} ${unitInfo[currentUnit].symbol}`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            /**
+             * Renders the UI with new data based on the selected timeframe and date.
+             */
+            function renderUI() {
+                const data = generateData(currentTimeframe);
+                const unit = unitInfo[currentUnit];
+                
+                // Update total consumption section
+                totalValueElement.textContent = `${data.current[currentUnit].toFixed(1)} ${unit.symbol}`;
+                
+                let totalLabelText;
+                let prevPeriodText;
+                let currentPeriodText;
+
+                switch(currentTimeframe) {
+                    case 'daily':
+                        totalLabelText = "Total Day's Consumption";
+                        prevPeriodText = "Previous Day";
+                        currentPeriodText = "This Day";
+                        break;
+                    case 'weekly':
+                        totalLabelText = "Total Week's Consumption";
+                        prevPeriodText = "Previous Week";
+                        currentPeriodText = "This Week";
+                        break;
+                    case 'monthly':
+                        totalLabelText = "Total Month's Consumption";
+                        prevPeriodText = "Previous Month";
+                        currentPeriodText = "This Month";
+                        break;
+                }
+                
+                totalLabelElement.textContent = totalLabelText;
+                prevPeriodLabel.textContent = prevPeriodText;
+                currentPeriodLabel.textContent = currentPeriodText;
+
+
+                // Update the date label
+                let dateString;
+                const options = { month: 'long', day: 'numeric', year: 'numeric' };
+                switch(currentTimeframe) {
+                    case 'daily':
+                        dateString = currentDate.toLocaleDateString('en-US', options);
+                        break;
+                    case 'weekly':
+                        const startOfWeek = new Date(currentDate);
+                        startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+                        const endOfWeek = new Date(startOfWeek);
+                        endOfWeek.setDate(startOfWeek.getDate() + 6);
+                        dateString = `${startOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+                        break;
+                    case 'monthly':
+                        dateString = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                        break;
+                }
+                dateLabel.textContent = dateString;
+
+                // Update "Compare your usage" section
+                prevPeriodValue.textContent = `${data.previous[currentUnit].toFixed(1)} ${unit.symbol}`;
+                currentPeriodValue.textContent = `${data.current[currentUnit].toFixed(1)} ${unit.symbol}`;
+
+                // Update comparison bars
+                const totalConsumption = data.previous[currentUnit] + data.current[currentUnit];
+                let prevWidth = (data.previous[currentUnit] / totalConsumption) * 100;
+                let currentWidth = (data.current[currentUnit] / totalConsumption) * 100;
+                
+                // Ensure bars are visible even with small values
+                if (prevWidth > 0 && prevWidth < 5) prevWidth = 5;
+                if (currentWidth > 0 && currentWidth < 5) currentWidth = 5;
+
+                prevBar.style.width = `${prevWidth}%`;
+                currentBar.style.width = `${currentWidth}%`;
+
+                // Update comparison text
+                const change = data.current[currentUnit] - data.previous[currentUnit];
+                const percentageChange = Math.abs(change / data.previous[currentUnit]) * 100;
+                let comparisonMessage;
+                if (change > 0) {
+                    comparisonMessage = `Your usage is up by ${percentageChange.toFixed(1)}% compared to the previous ${currentTimeframe}.`;
+                    comparisonText.className = 'text-sm text-center text-renew-red mt-4';
+                } else if (change < 0) {
+                    comparisonMessage = `Your usage is down by ${percentageChange.toFixed(1)}% compared to the previous ${currentTimeframe}.`;
+                    comparisonText.className = 'text-sm text-center text-renew-green mt-4';
+                } else {
+                    comparisonMessage = `Your usage is the same as the previous ${currentTimeframe}.`;
+                    comparisonText.className = 'text-sm text-center text-renew-gray mt-4';
+                }
+                comparisonText.textContent = comparisonMessage;
+
+                // Update cost breakdown section (always in EUR)
+                const totalCost = data.current.kwh * 0.20;
+                totalCostEl.textContent = `${totalCost.toFixed(2)} €`;
+                costPerKwhEl.textContent = `${(totalCost / data.current.kwh).toFixed(2)} €`;
+
+                let projectedCost;
+                if (currentTimeframe === 'daily') {
+                    projectedCost = totalCost * 30;
+                } else if (currentTimeframe === 'weekly') {
+                    projectedCost = totalCost * 4.3; // 4.3 weeks in a month
+                } else {
+                    projectedCost = totalCost; // Already a monthly value
+                }
+                projectedCostEl.textContent = `${projectedCost.toFixed(2)} €`;
+                
+                // Update chart with new data
+                updateChart(currentTimeframe);
+            }
+
+            // Event listener for the kWh/€ toggle switch
+            toggleSwitch.addEventListener('change', () => {
+                currentUnit = toggleSwitch.checked ? 'kwh' : 'cost';
+                kwhLabel.className = toggleSwitch.checked ? 'text-neutral-white font-bold' : 'text-renew-gray font-bold';
+                costLabel.className = toggleSwitch.checked ? 'text-renew-gray font-bold' : 'text-neutral-white font-bold';
+                renderUI();
+            });
+
+            // Event listener for the timeframe buttons
+            timeToggleGroup.addEventListener('click', (event) => {
+                const button = event.target.closest('.ds-time-button');
+                if (button) {
+                    document.querySelector('.ds-time-button.active').classList.remove('active');
+                    button.classList.add('active');
+                    currentTimeframe = button.dataset.timeframe;
+                    renderUI();
+                }
+            });
+
+            // Event listeners for date navigation buttons
+            prevDateBtn.addEventListener('click', () => {
+                switch(currentTimeframe) {
+                    case 'daily': currentDate.setDate(currentDate.getDate() - 1); break;
+                    case 'weekly': currentDate.setDate(currentDate.getDate() - 7); break;
+                    case 'monthly': currentDate.setMonth(currentDate.getMonth() - 1); break;
+                }
+                renderUI();
+            });
+
+            nextDateBtn.addEventListener('click', () => {
+                switch(currentTimeframe) {
+                    case 'daily': currentDate.setDate(currentDate.getDate() + 1); break;
+                    case 'weekly': currentDate.setDate(currentDate.getDate() + 7); break;
+                    case 'monthly': currentDate.setMonth(currentDate.getMonth() + 1); break;
+                }
+                renderUI();
+            });
+
+            // Initial render
+            renderUI();
+            renderTopUsers('heating'); // Render the default category on page load
+        };
+    </script>
+</body>
+</html>

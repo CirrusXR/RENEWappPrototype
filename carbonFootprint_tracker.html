@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Footprint Tracker</title>
+    <!-- Use Tailwind CSS for a modern and responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #213958; /* New background color */
+        }
+        .glass-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-gray-900">
+
+    <div class="container mx-auto glass-container rounded-3xl p-6 md:p-10 flex flex-col items-center max-w-2xl text-white">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-2 drop-shadow-lg">My Carbon Footprint</h1>
+            <p class="text-gray-300 text-md md:text-lg">Track your environmental impact with real-time data.</p>
+        </header>
+
+        <!-- Current Usage Card -->
+        <section class="w-full mb-8">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-6 shadow-lg transform transition-transform hover:scale-105 duration-300">
+                <div class="flex justify-between items-center mb-2">
+                    <p class="text-sm md:text-base opacity-90">Today's Usage</p>
+                    <span class="text-xl md:text-2xl font-bold" id="currentUsageValue">0</span>
+                </div>
+                <div class="w-full bg-blue-400 h-2 rounded-full overflow-hidden">
+                    <div class="bg-white h-2 rounded-full transition-all duration-700 ease-out" id="currentUsageBar" style="width: 0%;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Compare Your Usage Section -->
+        <section class="w-full mb-8">
+            <h2 class="text-xl md:text-2xl font-bold text-white mb-4 drop-shadow-lg">Compare Your Usage</h2>
+            <div class="space-y-6">
+
+                <!-- My Usage Bar -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <p class="text-sm font-semibold text-gray-200">My Usage</p>
+                        <span class="text-gray-300 text-sm font-medium" id="myUsageLabel">0 kWh</span>
+                    </div>
+                    <div class="w-full bg-white/20 h-6 rounded-lg overflow-hidden">
+                        <div id="myUsageBar" class="h-full rounded-lg transition-all duration-700 ease-out" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Average Usage Bar -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <p class="text-sm font-semibold text-gray-200">Average Usage</p>
+                        <span class="text-gray-300 text-sm font-medium" id="averageUsageLabel">0 kWh</span>
+                    </div>
+                    <div class="w-full bg-white/20 h-6 rounded-lg overflow-hidden">
+                        <div id="averageUsageBar" class="bg-blue-400 h-full rounded-lg transition-all duration-700 ease-out" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Tip Section -->
+        <section class="w-full text-center">
+            <div id="tipBox" class="bg-white/10 text-gray-300 rounded-lg p-4 transition-opacity duration-500 opacity-0">
+                <p id="tipText" class="text-sm md:text-base font-medium">Loading a great tip for you...</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Use a function to simulate data fetching
+        function fetchData() {
+            // Simulate random data for demonstration
+            const currentUsage = Math.floor(Math.random() * 100) + 1;
+            const userUsage = Math.floor(Math.random() * 250) + 50;
+            const averageUsage = 150; // A fixed average for comparison
+
+            // Update the display with the new data
+            updateDashboard(currentUsage, userUsage, averageUsage);
+        }
+
+        function updateDashboard(currentUsage, userUsage, averageUsage) {
+            // Get the HTML elements
+            const currentUsageValue = document.getElementById('currentUsageValue');
+            const currentUsageBar = document.getElementById('currentUsageBar');
+            const myUsageBar = document.getElementById('myUsageBar');
+            const averageUsageBar = document.getElementById('averageUsageBar');
+            const myUsageLabel = document.getElementById('myUsageLabel');
+            const averageUsageLabel = document.getElementById('averageUsageLabel');
+            const tipBox = document.getElementById('tipBox');
+            const tipText = document.getElementById('tipText');
+
+            // Set the usage values
+            currentUsageValue.textContent = currentUsage;
+            myUsageLabel.textContent = `${userUsage} kWh`;
+            averageUsageLabel.textContent = `${averageUsage} kWh`;
+
+            // Calculate the bar widths
+            // For the current usage bar, a max value of 100 is assumed
+            let currentUsageWidth = (currentUsage / 100) * 100;
+            if (currentUsageWidth > 100) currentUsageWidth = 100;
+
+            // For comparison bars, find the max of the two values to set the scale
+            const maxUsage = Math.max(userUsage, averageUsage) * 1.2; // Add a buffer for better visualization
+            const myUsageWidth = (userUsage / maxUsage) * 100;
+            const averageUsageWidth = (averageUsage / maxUsage) * 100;
+
+            // Update the widths of the bars
+            currentUsageBar.style.width = `${currentUsageWidth}%`;
+            averageUsageBar.style.width = `${averageUsageWidth}%`;
+
+            // --- Dynamic Color Logic for the Usage Bars ---
+            // Remove any previous color classes
+            myUsageBar.classList.remove('bg-amber-500', 'bg-green-500');
+
+            // Apply a new color based on the comparison
+            if (userUsage > averageUsage) {
+                myUsageBar.classList.add('bg-amber-500'); // Change color to a warning color
+            } else {
+                myUsageBar.classList.add('bg-green-500'); // Use a positive color
+            }
+
+            // --- Dynamic Tips ---
+            const tips = [
+                "Switch to energy-saving light bulbs to reduce electricity consumption.",
+                "Unplug electronics when not in use to prevent phantom energy drain.",
+                "Take shorter showers to save water and energy.",
+                "Use a programmable thermostat to optimize heating and cooling.",
+                "Walk or bike instead of driving for short distances."
+            ];
+
+            // Randomly select a tip
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            tipText.textContent = randomTip;
+
+            // Make the tip box visible with a fade-in effect
+            setTimeout(() => {
+                tipBox.classList.remove('opacity-0');
+                tipBox.classList.add('opacity-100');
+            }, 500);
+        }
+
+        // Fetch data initially and then every 5 seconds
+        fetchData();
+        setInterval(fetchData, 5000);
+    </script>
+</body>
+</html>

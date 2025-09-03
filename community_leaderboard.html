@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renew Leaderboards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'primary-blue': '#213958',
+                'primary-green': '#5CBE67',
+                'secondary-gray': '#8C8C8C',
+                'accent-red': '#D34E4E',
+                'neutral-white': '#FFFFFF',
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #213958;
+            color: #FFFFFF;
+            padding-bottom: 5rem;
+        }
+
+        /* Glassmorphic Panel/Card Style */
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-button {
+            transition: all 0.3s ease-in-out;
+            font-weight: 500;
+        }
+
+        .tab-button.active {
+            font-weight: 700;
+            color: #FFFFFF;
+            background-color: #5CBE67;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            border-radius: 9999px;
+        }
+
+        .sub-tab-button {
+            transition: all 0.3s ease-in-out;
+            font-weight: 500;
+            color: #8C8C8C;
+        }
+
+        .sub-tab-button.active {
+            font-weight: 700;
+            color: #5CBE67;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .leaderboard-item {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .leaderboard-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-item {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .nav-item.active {
+            color: #5CBE67;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <div id="app-root" class="flex-grow flex flex-col items-center py-10 px-4">
+        <main class="mx-auto max-w-4xl w-full">
+            <header class="py-4 mb-8 text-center">
+                <h1 class="text-4xl font-bold text-neutral-white">Community Hub</h1>
+                <p class="text-sm text-secondary-gray mt-1">Connect with local projects and make a difference.</p>
+            </header>
+
+            <div class="flex p-1 mb-6 rounded-full max-w-sm mx-auto glass-panel">
+                <a href="community_projects.html" class="tab-button flex-1 py-2 px-6 text-center text-sm rounded-full text-primary-green transition-all duration-300 ease-in-out">
+                    Projects
+                </a>
+                <a href="#" class="tab-button active flex-1 py-2 px-6 text-center text-sm rounded-full bg-primary-green text-neutral-white transition-all duration-300 ease-in-out">
+                    Leaderboards
+                </a>
+            </div>
+
+            <div id="content-container">
+                <div id="leaderboards-view">
+                    <div class="flex p-1 mb-6 rounded-full max-w-lg mx-auto glass-panel justify-center">
+                        <button id="individual-tab" class="sub-tab-button active flex-1 py-2 px-6 text-center text-sm rounded-full text-primary-green transition-all duration-300 ease-in-out">
+                            Individual
+                        </button>
+                        <button id="neighborhood-tab" class="sub-tab-button flex-1 py-2 px-6 text-center text-sm rounded-full text-secondary-gray transition-all duration-300 ease-in-out">
+                            Neighborhood
+                        </button>
+                        <button id="friends-tab" class="sub-tab-button flex-1 py-2 px-6 text-center text-sm rounded-full text-secondary-gray transition-all duration-300 ease-in-out">
+                            Friends
+                        </button>
+                    </div>
+
+                    <p class="text-center text-secondary-gray text-sm leading-relaxed mb-6">
+                        Your energy savings climb the leaderboard. The more you save, the higher you rank. Challenge your neighbors and see who can make the biggest impact!
+                    </p>
+
+                    <div class="glass-panel p-4 rounded-xl mb-6 max-w-md mx-auto">
+                        <p class="text-sm text-secondary-gray">Your rank: <span class="text-neutral-white font-bold text-lg"># 02</span></p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg">
+                            <div class="flex items-center space-x-4">
+                                <span class="font-bold text-lg text-primary-green">1</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 14s-6 2-6 7v1h12v-1s-6-5-6-7z"/>
+                                </svg>
+                                <span class="text-md text-neutral-white font-medium">Jo Blogs</span>
+                            </div>
+                            <span class="text-lg text-neutral-white font-bold glass-panel py-1 px-4 rounded-full">€312</span>
+                        </div>
+
+                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg border border-primary-green">
+                            <div class="flex items-center space-x-4">
+                                <span class="font-bold text-lg text-primary-green">2</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 14s-6 2-6 7v1h12v-1s-6-5-6-7z"/>
+                                </svg>
+                                <span class="text-md text-neutral-white font-medium">Lo Lo (You)</span>
+                            </div>
+                            <span class="text-lg text-neutral-white font-bold glass-panel py-1 px-4 rounded-full">€290</span>
+                        </div>
+
+                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg">
+                            <div class="flex items-center space-x-4">
+                                <span class="font-bold text-lg text-primary-green">3</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 14s-6 2-6 7v1h12v-1s-6-5-6-7z"/>
+                                </svg>
+                                <span class="text-md text-neutral-white font-medium">Jane Blogs</span>
+                            </div>
+                            <span class="text-lg text-neutral-white font-bold glass-panel py-1 px-4 rounded-full">€255</span>
+                        </div>
+
+                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg">
+                            <div class="flex items-center space-x-4">
+                                <span class="font-bold text-lg text-primary-green">4</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 14s-6 2-6 7v1h12v-1s-6-5-6-7z"/>
+                                </svg>
+                                <span class="text-md text-neutral-white font-medium">Ro Ro</span>
+                            </div>
+                            <span class="text-lg text-neutral-white font-bold glass-panel py-1 px-4 rounded-full">€212</span>
+                        </div>
+
+                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg">
+                            <div class="flex items-center space-x-4">
+                                <span class="font-bold text-lg text-primary-green">5</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 14s-6 2-6 7v1h12v-1s-6-5-6-7z"/>
+                                </svg>
+                                <span class="text-md text-neutral-white font-medium">Mo Mo</span>
+                            </div>
+                            <span class="text-lg text-neutral-white font-bold glass-panel py-1 px-4 rounded-full">€198</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg border-t-2 border-neutral-white sm-hidden">
+        <nav class="flex justify-around items-center h-16">
+            <a href="/home.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium focus:outline-none text-secondary-gray hover:text-primary-green active" data-tab="home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <path d="M9 22V12h6v10"></path>
+                </svg>
+                <span class="mt-1 text-xs">Home</span>
+            </a>
+            <a href="/devices.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none" data-tab="devices">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 11V5.5L12 2 8 5.5V11H6V22h12V11z" />
+                </svg>
+                <span class="mt-1 text-xs">Devices</span>
+            </a>
+            <a href="/community.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none" data-tab="community">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 19.22H5.78a2 2 0 0 1-1.74-2.8l2.64-7.55a2 2 0 0 1 1.74-1.65h10.42a2 2 0 0 1 1.74 1.65l2.64 7.55a2 2 0 0 1-1.74 2.8z" />
+                    <circle cx="12" cy="7" r="2" />
+                </svg>
+                <span class="mt-1 text-xs">Community</span>
+            </a>
+            <a href="/savings.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none" data-tab="savings">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+                <span class="mt-1 text-xs">Savings</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const individualTab = document.getElementById('individual-tab');
+            const neighborhoodTab = document.getElementById('neighborhood-tab');
+            const friendsTab = document.getElementById('friends-tab');
+
+            function setActiveSubTab(activeTab) {
+                individualTab.classList.remove('active');
+                neighborhoodTab.classList.remove('active');
+                friendsTab.classList.remove('active');
+
+                activeTab.classList.add('active');
+            }
+
+            individualTab.addEventListener('click', () => {
+                setActiveSubTab(individualTab);
+            });
+
+            neighborhoodTab.addEventListener('click', () => {
+                setActiveSubTab(neighborhoodTab);
+            });
+
+            friendsTab.addEventListener('click', () => {
+                setActiveSubTab(friendsTab);
+            });
+        });
+    </script>
+</body>
+</html>

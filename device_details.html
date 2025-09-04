@@ -9,322 +9,186 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <style>
-        /* RENEW Design System Color Palette for Glassmorphism */
-        :root {
-            --color-renew-blue: #213958;
-            --color-renew-green: #5C8E67; /* Primary Green from DS */
-            --color-renew-gray: #8CBCBC; /* Secondary Gray from DS */
-            --color-renew-red: #D3464E; /* Accent Red from DS */
-            --color-renew-yellow: #FFC107; /* Not in DS but used in original code, kept for consistency */
-            --color-neutral-white: #FFFFFF; /* Neutral White from DS */
-            --color-light-gray: #f9fafb;
-            --color-text-light: #6b7280;
-            --color-dark-text: #1E2A47;
-            --color-dark-bg: #141A2D;
-            --color-graph-line: #508667;
-            --color-graph-fill: #508667;
-            --color-axis-label: #a3a3a3;
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'primary-blue': '#213958',
+                'primary-green': '#5CBE67',
+                'secondary-gray': '#8C8C8C',
+                'accent-red': '#D34E4E',
+                'accent-yellow': '#FFC107',
+                'neutral-white': '#FFFFFF',
+              }
+            }
+          }
         }
-
-        /* Glassmorphism background and text color */
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--color-renew-blue), #3b5072);
-            color: var(--color-neutral-white);
-        }
-
-        /* Glassmorphism Card Component */
-        .ds-card {
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 1.5rem;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .ds-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Nav Item Component with color updates */
-        .ds-nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--color-renew-gray);
-            transition: color 0.2s ease-in-out;
-        }
-        .ds-nav-item.active {
-            color: var(--color-neutral-white);
-            font-weight: 600;
-        }
-
-        /* General layout improvements */
-        .ds-time-toggle {
-            display: flex;
-            background-color: rgba(255, 255, 255, 0.15);
-            border-radius: 9999px;
-            padding: 0.25rem;
-            justify-content: space-between;
-        }
-        .ds-time-button {
-            flex: 1;
-            padding: 0.5rem;
-            text-align: center;
-            font-weight: 600;
-            color: var(--color-renew-gray);
-            border-radius: 9999px;
-            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .ds-time-button.active {
-            background-color: var(--color-renew-green);
-            color: var(--color-neutral-white);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        /* Styling for the comparison bars */
-        .comparison-bar-bg {
-            background-color: rgba(255, 255, 255, 0.2);
-            height: 1rem;
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-        .comparison-bar {
-            height: 100%;
-            transition: width 0.5s ease-in-out;
-        }
-
-        /* New classes for the comparison bar colors */
-        .bar-yellow {
-            background-color: var(--color-renew-yellow);
-        }
-        .bar-green {
-            background-color: var(--color-renew-green);
-        }
-        
-        /* Custom toggle switch based on the design system */
-        .ds-toggle-track {
-            background-color: rgba(255, 255, 255, 0.3);
-            transition: background-color 0.2s ease-in-out;
-        }
-        .ds-toggle-track:checked {
-            background-color: var(--color-renew-green);
-        }
-        
-        /* Chart Canvas Styling */
-        #usage-chart {
-            width: 100%;
-            height: 200px;
-        }
-        
-        .grid-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .cta-button {
-            background-color: var(--color-renew-blue);
-            color: var(--color-neutral-white);
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 1rem;
-            text-align: center;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .cta-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-        }
-
-        .bar-chart-container {
-            width: 100%;
-            height: 200px;
-            position: relative;
-        }
-
-        .bar-chart-bar {
-            position: absolute;
-            bottom: 0;
-            width: 10px;
-            border-radius: 5px 5px 0 0;
-            transition: height 0.5s ease-in-out;
-            background-color: var(--color-renew-green);
-        }
-    </style>
+    </script>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="bg-primary-blue text-neutral-white flex flex-col min-h-screen font-sans antialiased">
     <main class="flex-grow mx-auto max-w-4xl w-full p-4 md:p-8">
 
         <header class="flex flex-col items-center relative py-4 mb-4">
-            <a href="#" onclick="history.back(); return false;" class="absolute left-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <a href="/devices.html" onclick="history.back(); return false;" class="absolute left-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-neutral-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
-            <h1 class="text-3xl font-bold text-white" id="device-title"></h1>
+            <h1 class="text-3xl font-bold text-neutral-white" id="device-title"></h1>
             
             <div class="mt-2 relative inline-block text-left w-full max-w-sm">
-                <select id="device-selector" class="block w-full text-center px-4 py-2 text-renew-blue bg-white border-none rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-renew-green focus:border-transparent">
-                    <option value="kettle">Kettle</option>
+                <select id="device-selector" class="block w-full text-center px-4 py-2 text-primary-blue bg-neutral-white border-none rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                    <option value="immersion heater">Immersion Heater</option>
                     <option value="toaster">Toaster</option>
                     <option value="microwave">Microwave</option>
                 </select>
             </div>
         </header>
         
-        <div class="ds-card p-4 md:p-6 mb-6">
-            <div class="ds-time-toggle mb-4" id="time-toggle-group">
-                <button class="ds-time-button active" data-timeframe="daily">Day</button>
-                <button class="ds-time-button" data-timeframe="weekly">Week</button>
-                <button class="ds-time-button" data-timeframe="monthly">Month</button>
+        <div class="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-4 md:p-6 mb-6">
+            <div class="flex bg-white/10 rounded-full p-1 mb-4" id="time-toggle-group">
+                <button class="flex-1 py-2 px-6 text-center text-sm font-semibold rounded-full text-neutral-white transition-all duration-300 ease-in-out bg-primary-green shadow-md" data-timeframe="daily">Day</button>
+                <button class="flex-1 py-2 px-6 text-center text-sm font-medium rounded-full text-secondary-gray transition-all duration-300 ease-in-out" data-timeframe="weekly">Week</button>
+                <button class="flex-1 py-2 px-6 text-center text-sm font-medium rounded-full text-secondary-gray transition-all duration-300 ease-in-out" data-timeframe="monthly">Month</button>
             </div>
 
             <div class="flex flex-col items-center justify-center text-center mt-6 mb-6">
                 <div class="flex items-center space-x-4 mb-4">
                     <button id="prev-date-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <span class="text-white font-bold text-lg" id="date-label"></span>
+                    <span class="text-neutral-white font-bold text-lg" id="date-label"></span>
                     <button id="next-date-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
                     </button>
                 </div>
                 
                 <div class="flex items-center space-x-4">
-                    <span id="kwh-label" class="text-white font-bold">kWh</span>
+                    <span id="kwh-label" class="text-neutral-white font-bold">kWh</span>
                     <label for="toggle-switch" class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" value="" id="toggle-switch" class="sr-only peer" checked>
-                        <div class="w-11 h-6 ds-toggle-track rounded-full peer peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-renew-green/20 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-renew-green"></div>
+                        <div class="w-11 h-6 bg-white/30 rounded-full peer peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-green/20 peer-checked:after:translate-x-full peer-checked:after:border-neutral-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-neutral-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-green"></div>
                     </label>
-                    <span id="cost-label" class="text-renew-gray font-bold">€</span>
+                    <span id="cost-label" class="text-secondary-gray font-bold">€</span>
                 </div>
 
                 <div class="mt-8">
-                    <p class="text-renew-gray font-medium text-sm">Average <span id="timeframe-unit-label"></span></p>
-                    <p class="text-white font-bold text-3xl mt-1" id="average-value"></p>
+                    <p class="text-secondary-gray font-medium text-sm">Average <span id="timeframe-unit-label"></span></p>
+                    <p class="text-neutral-white font-bold text-3xl mt-1" id="average-value"></p>
                 </div>
             </div>
         </div>
 
         <section class="mb-6">
-            <h2 class="text-xl font-bold text-white mb-4">Usage Over Time</h2>
-            <div class="ds-card p-4">
+            <h2 class="text-xl font-bold text-neutral-white mb-4">Usage Over Time</h2>
+            <div class="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-4">
                 <canvas id="usage-chart"></canvas>
             </div>
         </section>
         
         <section class="mb-6">
             <h2 class="text-xl font-bold text-neutral-white mb-4">Compare your usage</h2>
-            <div class="ds-card p-4">
+            <div class="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-4">
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-1">
-                        <span id="prev-period-label" class="text-renew-gray font-medium text-sm"></span>
-                        <span id="prev-period-value" class="text-renew-gray font-bold text-sm"></span>
+                        <span id="prev-period-label" class="text-secondary-gray font-medium text-sm"></span>
+                        <span id="prev-period-value" class="text-secondary-gray font-bold text-sm"></span>
                     </div>
-                    <div class="comparison-bar-bg">
-                        <div id="prev-bar" class="comparison-bar"></div>
+                    <div class="bg-white/20 h-4 rounded-full overflow-hidden">
+                        <div id="prev-bar" class="h-full transition-all duration-500"></div>
                     </div>
                 </div>
 
                 <div>
                     <div class="flex justify-between items-center mb-1">
-                        <span id="current-period-label" class="text-renew-gray font-medium text-sm"></span>
-                        <span id="current-period-value" class="text-renew-gray font-bold text-sm"></span>
+                        <span id="current-period-label" class="text-secondary-gray font-medium text-sm"></span>
+                        <span id="current-period-value" class="text-secondary-gray font-bold text-sm"></span>
                     </div>
-                    <div class="comparison-bar-bg">
-                        <div id="current-bar" class="comparison-bar"></div>
+                    <div class="bg-white/20 h-4 rounded-full overflow-hidden">
+                        <div id="current-bar" class="h-full transition-all duration-500"></div>
                     </div>
                 </div>
             </div>
-            <p class="text-sm text-center text-renew-gray mt-4" id="comparison-text"></p>
+            <p class="text-sm text-center text-secondary-gray mt-4" id="comparison-text"></p>
         </section>
 
         <section class="mb-6">
-            <h2 class="text-xl font-bold text-white mb-4">Cost Breakdown</h2>
-            <div class="ds-card p-4">
+            <h2 class="text-xl font-bold text-neutral-white mb-4">Cost Breakdown</h2>
+            <div class="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-4">
                 <div class="space-y-4">
-                    <div class="grid-item">
-                        <p class="text-renew-gray font-medium text-sm">Total Cost for Period</p>
-                        <p id="total-cost" class="font-bold text-white"></p>
+                    <div class="flex justify-between items-center pb-2 border-b border-white/30">
+                        <p class="text-secondary-gray font-medium text-sm">Total Cost for Period</p>
+                        <p id="total-cost" class="font-bold text-neutral-white"></p>
                     </div>
-                    <div class="grid-item">
-                        <p class="text-renew-gray font-medium text-sm">Average Cost per kWh</p>
-                        <p id="cost-per-kwh" class="font-bold text-white"></p>
+                    <div class="flex justify-between items-center pb-2 border-b border-white/30">
+                        <p class="text-secondary-gray font-medium text-sm">Average Cost per kWh</p>
+                        <p id="cost-per-kwh" class="font-bold text-neutral-white"></p>
                     </div>
-                    <div class="grid-item border-b-0">
-                        <p class="text-renew-gray font-medium text-sm">Projected Monthly Cost</p>
-                        <p id="projected-cost" class="font-bold text-white"></p>
+                    <div class="flex justify-between items-center">
+                        <p class="text-secondary-gray font-medium text-sm">Projected Monthly Cost</p>
+                        <p id="projected-cost" class="font-bold text-neutral-white"></p>
                     </div>
                 </div>
             </div>
         </section>
         
         <section class="mb-24">
-            <div class="ds-card p-4 flex items-center space-x-4">
+            <div class="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-4 flex items-center space-x-4">
                 <div class="p-2 bg-white/10 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-renew-yellow" viewBox="0 0 24 24" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-accent-yellow" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19c-3.87 0-7 3.13-7 7 0 2.21 1.14 4.19 3 5.34V17h8v-3.66c1.86-1.15 3-3.13 3-5.34 0-3.87-3.13-7-7-7z"/>
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-bold text-lg text-white">Smart Energy Tips!</h3>
-                    <p class="text-renew-gray text-sm mt-1">Try using your appliances in the yellow zone!</p>
+                    <h3 class="font-bold text-lg text-neutral-white">Smart Energy Tips!</h3>
+                    <p class="text-secondary-gray text-sm mt-1">Try using your appliances in the yellow zone!</p>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <footer class="ds-nav-bar fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg border-t-2 border-white/10">
-        <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg border-t-2 border-gray-100 sm-hidden">
+    <footer class="fixed bottom-0 left-0 right-0 z-50 bg-white/5 backdrop-blur-md rounded-t-3xl shadow-lg border-t-2 border-white/10">
         <nav class="flex justify-around items-center h-16">
-            <a href="#home" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium focus:outline-none text-[#94A3B8] hover:text-[#22C55E] active" data-tab="home">
+            <a href="/home.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium focus:outline-none text-secondary-gray hover:text-primary-green transition-colors" data-tab="home">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <path d="M9 22V12h6v10"></path>
                 </svg>
                 <span class="mt-1 text-xs">Home</span>
             </a>
-            <a href="/devices.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-[#94A3B8] hover:text-[#22C55E] focus:outline-none" data-tab="devices">
+            <a href="/devices.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none transition-colors" data-tab="devices">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M16 11V5.5L12 2 8 5.5V11H6V22h12V11z" />
                 </svg>
                 <span class="mt-1 text-xs">Devices</span>
             </a>
-            <a href="/community.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-[#94A3B8] hover:text-[#22C55E] focus:outline-none" data-tab="community">
+            <a href="/community.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none transition-colors" data-tab="community">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 19.22H5.78a2 2 0 0 1-1.74-2.8l2.64-7.55a2 2 0 0 1 1.74-1.65h10.42a2 2 0 0 1 1.74 1.65l2.64 7.55a2 2 0 0 1-1.74 2.8z" />
                     <circle cx="12" cy="7" r="2" />
                 </svg>
                 <span class="mt-1 text-xs">Community</span>
             </a>
-            <a href="/savings.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-[#94A3B8] hover:text-[#22C55E] focus:outline-none" data-tab="savings">
+            <a href="/savings.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none transition-colors active" data-tab="savings">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                 </svg>
                 <span class="mt-1 text-xs">Savings</span>
             </a>
         </nav>
-    </div>
     </footer>
 
     <script>
         window.onload = function() {
             const devicesData = {
                 kettle: {
-                    displayName: 'Kettle',
+                    displayName: 'Immersion Heater',
                     baseKwh: 0.15,
                     costPerKwh: 0.20,
                     specs: {
@@ -472,17 +336,39 @@
                 return data;
             }
 
+            function getBarColors(data) {
+                const sum = data.reduce((a, b) => a + b, 0);
+                const average = sum / data.length;
+                const colors = [];
+                const green = '#5CBE67';
+                const yellow = '#FFC107';
+                const red = '#D34E4E';
+
+                data.forEach(value => {
+                    if (value < average * 0.8) {
+                        colors.push(green);
+                    } else if (value > average * 1.2) {
+                        colors.push(red);
+                    } else {
+                        colors.push(yellow);
+                    }
+                });
+                return colors;
+            }
+
             function updateChart() {
                 const chartData = generateChartData(currentDeviceId, currentTimeframe);
+                const consumptionData = chartData.data.map(val => currentUnit === 'cost' ? val * devicesData[currentDeviceId].costPerKwh : val);
+                const barColors = getBarColors(consumptionData);
                 
                 if (usageChart) {
                     usageChart.data.labels = chartData.labels;
-                    usageChart.data.datasets[0].data = chartData.data;
+                    usageChart.data.datasets[0].data = consumptionData;
                     usageChart.data.datasets[0].label = `Consumption (${unitInfo[currentUnit].symbol})`;
+                    usageChart.data.datasets[0].backgroundColor = barColors;
                     usageChart.options.scales.y.ticks.callback = function(value) {
-                        return `${value.toFixed(1)} ${unitInfo[currentUnit].symbol}`;
+                        return `${unitInfo[currentUnit].symbol}${value.toFixed(1)}`;
                     };
-                    usageChart.data.datasets[0].data = chartData.data.map(val => currentUnit === 'cost' ? val * devicesData[currentDeviceId].costPerKwh : val);
                     usageChart.update();
                 } else {
                     usageChart = new Chart(ctx, {
@@ -491,9 +377,9 @@
                             labels: chartData.labels,
                             datasets: [{
                                 label: `Consumption (${unitInfo[currentUnit].symbol})`,
-                                data: chartData.data.map(val => currentUnit === 'cost' ? val * devicesData[currentDeviceId].costPerKwh : val),
-                                backgroundColor: 'rgba(255, 193, 7, 0.8)',
-                                borderColor: 'rgba(255, 193, 7, 1)',
+                                data: consumptionData,
+                                backgroundColor: barColors,
+                                borderColor: barColors.map(color => color.replace('rgba(', 'rgb(').replace(', 0.8)', ')')),
                                 borderWidth: 1,
                                 borderRadius: 5,
                             }]
@@ -511,7 +397,7 @@
                                     callbacks: {
                                         label: function(context) {
                                             const value = context.parsed.y;
-                                            return `${value.toFixed(2)} ${unitInfo[currentUnit].symbol}`;
+                                            return `${unitInfo[currentUnit].symbol}${value.toFixed(2)}`;
                                         }
                                     }
                                 }
@@ -535,7 +421,7 @@
                                     ticks: {
                                         color: 'rgba(255, 255, 255, 0.8)',
                                         callback: function(value) {
-                                            return `${value.toFixed(1)} ${unitInfo[currentUnit].symbol}`;
+                                            return `${unitInfo[currentUnit].symbol}${value.toFixed(1)}`;
                                         }
                                     }
                                 }
@@ -575,7 +461,7 @@
                 deviceTitle.textContent = device.displayName;
 
                 const avgValue = currentUnit === 'kwh' ? data.current.kwh : data.current.cost;
-                averageValueElement.textContent = `${avgValue.toFixed(2)} ${unitInfo[currentUnit].symbol}`;
+                averageValueElement.textContent = `${unitInfo[currentUnit].symbol}${avgValue.toFixed(2)}`;
                 
                 const unitText = currentTimeframe === 'daily' ? 'Day' : currentTimeframe === 'weekly' ? 'Week' : 'Month';
                 timeframeUnitLabel.textContent = `${unitText} ${unitInfo[currentUnit].label}`;
@@ -587,28 +473,28 @@
                 const maxVal = Math.max(currentVal, prevVal);
                 
                 prevPeriodLabel.textContent = `Previous ${unitText}`;
-                prevPeriodValue.textContent = `${prevVal.toFixed(2)} ${unitInfo[currentUnit].symbol}`;
+                prevPeriodValue.textContent = `${unitInfo[currentUnit].symbol}${prevVal.toFixed(2)}`;
                 prevBar.style.width = `${(prevVal / maxVal) * 100}%`;
                 
                 currentPeriodLabel.textContent = `Current ${unitText}`;
-                currentPeriodValue.textContent = `${currentVal.toFixed(2)} ${unitInfo[currentUnit].symbol}`;
+                currentPeriodValue.textContent = `${unitInfo[currentUnit].symbol}${currentVal.toFixed(2)}`;
                 currentBar.style.width = `${(currentVal / maxVal) * 100}%`;
 
                 if (currentVal > prevVal) {
-                    currentBar.className = 'comparison-bar bar-yellow';
-                    currentPeriodValue.className = 'text-renew-yellow font-bold text-sm';
-                    prevBar.className = 'comparison-bar bar-green';
-                    prevPeriodValue.className = 'text-renew-green font-bold text-sm';
+                    currentBar.className = 'h-full transition-all duration-500 bg-accent-yellow';
+                    currentPeriodValue.className = 'text-accent-yellow font-bold text-sm';
+                    prevBar.className = 'h-full transition-all duration-500 bg-primary-green';
+                    prevPeriodValue.className = 'text-primary-green font-bold text-sm';
                 } else if (currentVal < prevVal) {
-                    currentBar.className = 'comparison-bar bar-green';
-                    currentPeriodValue.className = 'text-renew-green font-bold text-sm';
-                    prevBar.className = 'comparison-bar bar-yellow';
-                    prevPeriodValue.className = 'text-renew-yellow font-bold text-sm';
+                    currentBar.className = 'h-full transition-all duration-500 bg-primary-green';
+                    currentPeriodValue.className = 'text-primary-green font-bold text-sm';
+                    prevBar.className = 'h-full transition-all duration-500 bg-accent-yellow';
+                    prevPeriodValue.className = 'text-accent-yellow font-bold text-sm';
                 } else {
-                    currentBar.className = 'comparison-bar bar-green';
-                    currentPeriodValue.className = 'text-renew-green font-bold text-sm';
-                    prevBar.className = 'comparison-bar bar-green';
-                    prevPeriodValue.className = 'text-renew-green font-bold text-sm';
+                    currentBar.className = 'h-full transition-all duration-500 bg-primary-green';
+                    currentPeriodValue.className = 'text-primary-green font-bold text-sm';
+                    prevBar.className = 'h-full transition-all duration-500 bg-primary-green';
+                    prevPeriodValue.className = 'text-primary-green font-bold text-sm';
                 }
 
                 const change = currentVal - prevVal;
@@ -624,61 +510,57 @@
                 comparisonText.textContent = comparisonMessage;
 
                 const totalCost = data.current.kwh * device.costPerKwh;
-                totalCostEl.textContent = `${totalCost.toFixed(2)} €`;
+                totalCostEl.textContent = `${unitInfo.cost.symbol}${totalCost.toFixed(2)}`;
 
                 const costPerKwh = device.costPerKwh;
-                costPerKwhEl.textContent = `${costPerKwh.toFixed(2)} €`;
+                costPerKwhEl.textContent = `${unitInfo.cost.symbol}${costPerKwh.toFixed(2)}`;
 
                 const projectedMonthlyKwh = data.current.kwh * (30 / (currentTimeframe === 'daily' ? 1 : currentTimeframe === 'weekly' ? 7 : 30));
                 const projectedMonthlyCost = projectedMonthlyKwh * device.costPerKwh;
-                projectedCostEl.textContent = `${projectedMonthlyCost.toFixed(2)} €`;
+                projectedCostEl.textContent = `${unitInfo.cost.symbol}${projectedMonthlyCost.toFixed(2)}`;
 
                 updateChart();
             }
 
-            function handleTimeframeClick(event) {
-                const buttons = timeToggleGroup.querySelectorAll('.ds-time-button');
-                buttons.forEach(btn => btn.classList.remove('active'));
-                event.target.classList.add('active');
-                currentTimeframe = event.target.dataset.timeframe;
-                updateUI();
-            }
-
-            function handleDateChange(direction) {
-                const daysToAdd = direction === 'next' ? 1 : -1;
-                switch(currentTimeframe) {
-                    case 'daily':
-                        currentDate.setDate(currentDate.getDate() + daysToAdd);
-                        break;
-                    case 'weekly':
-                        currentDate.setDate(currentDate.getDate() + (daysToAdd * 7));
-                        break;
-                    case 'monthly':
-                        currentDate.setMonth(currentDate.getMonth() + daysToAdd);
-                        break;
-                }
-                updateUI();
-            }
-
-            deviceSelector.addEventListener('change', (event) => {
-                currentDeviceId = event.target.value;
+            // Event Listeners
+            deviceSelector.addEventListener('change', (e) => {
+                currentDeviceId = e.target.value;
                 updateUI();
             });
 
-            toggleSwitch.addEventListener('change', (event) => {
-                currentUnit = event.target.checked ? 'kwh' : 'cost';
-                costLabel.classList.toggle('text-renew-gray');
-                kwhLabel.classList.toggle('text-renew-gray');
-                costLabel.classList.toggle('text-white');
-                kwhLabel.classList.toggle('text-white');
+            toggleSwitch.addEventListener('change', () => {
+                currentUnit = toggleSwitch.checked ? 'kwh' : 'cost';
+                kwhLabel.className = `font-bold ${currentUnit === 'kwh' ? 'text-neutral-white' : 'text-secondary-gray'}`;
+                costLabel.className = `font-bold ${currentUnit === 'cost' ? 'text-neutral-white' : 'text-secondary-gray'}`;
                 updateUI();
             });
 
-            timeToggleGroup.addEventListener('click', handleTimeframeClick);
-            prevDateBtn.addEventListener('click', () => handleDateChange('prev'));
-            nextDateBtn.addEventListener('click', () => handleDateChange('next'));
+            timeToggleGroup.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', () => {
+                    timeToggleGroup.querySelectorAll('button').forEach(btn => btn.classList.remove('bg-primary-green', 'shadow-md', 'text-neutral-white'));
+                    timeToggleGroup.querySelectorAll('button').forEach(btn => btn.classList.add('text-secondary-gray'));
+                    button.classList.add('bg-primary-green', 'shadow-md', 'text-neutral-white');
+                    button.classList.remove('text-secondary-gray');
+                    currentTimeframe = button.dataset.timeframe;
+                    updateUI();
+                });
+            });
 
+            prevDateBtn.addEventListener('click', () => {
+                const unit = currentTimeframe === 'daily' ? 1 : currentTimeframe === 'weekly' ? 7 : 30;
+                currentDate.setDate(currentDate.getDate() - unit);
+                updateUI();
+            });
+
+            nextDateBtn.addEventListener('click', () => {
+                const unit = currentTimeframe === 'daily' ? 1 : currentTimeframe === 'weekly' ? 7 : 30;
+                currentDate.setDate(currentDate.getDate() + unit);
+                updateUI();
+            });
+            
+            // Initial UI update
             updateUI();
+            
         };
     </script>
 </body>

@@ -59,20 +59,27 @@ function updateLiveEnergy(kwh, message, status) {
     const energyKwhElement = document.getElementById('energy-kwh');
     const energyMessageElement = document.getElementById('energy-message');
     const liveEnergyCard = document.getElementById('live-energy-card');
+    const homeIcon = document.getElementById('homeIcon'); // Get the home icon element
 
     if (energyKwhElement) energyKwhElement.textContent = kwh;
     if (energyMessageElement) energyMessageElement.textContent = message;
 
-    // Remove existing pulse classes
+    // Remove existing pulse classes from both the card and the icon
     liveEnergyCard.classList.remove('pulse-green', 'pulse-yellow', 'pulse-red');
+    if (homeIcon) {
+        homeIcon.classList.remove('pulse-green', 'pulse-yellow', 'pulse-red');
+    }
 
-    // Add new pulse class based on status
+    // Add new pulse class based on status to both the card and the icon
     if (status === 'low') {
         liveEnergyCard.classList.add('pulse-green');
+        if (homeIcon) homeIcon.classList.add('pulse-green');
     } else if (status === 'medium') {
         liveEnergyCard.classList.add('pulse-yellow');
+        if (homeIcon) homeIcon.classList.add('pulse-yellow');
     } else if (status === 'high') {
         liveEnergyCard.classList.add('pulse-red');
+        if (homeIcon) homeIcon.classList.add('pulse-red');
     }
 }
 

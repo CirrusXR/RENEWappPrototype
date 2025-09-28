@@ -85,14 +85,14 @@ setInterval(() => {
     let status = '';
 
     if (randomKwh < 1.0) {
-        message = 'Your home is currently consuming very little energy.';
         status = 'low';
+        message = 'Low energy cost now. Best time to use your devices.';
     } else if (randomKwh < 2.0) {
-        message = 'Your home is currently consuming a moderate amount of energy.';
         status = 'medium';
+        message = 'Moderate energy cost. Consider shifting heavy usage.';
     } else {
-        message = 'Your home is currently consuming a high amount of energy.';
         status = 'high';
+        message = 'High energy cost. Avoid using non-essential devices.';
     }
     updateLiveEnergy(randomKwh, message, status);
 }, 5000); // Update every 5 seconds

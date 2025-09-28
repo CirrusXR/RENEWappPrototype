@@ -4,6 +4,7 @@ RENEWApp is a web-based application designed to empower users to monitor, unders
 
 ## Key Features
 
+*   **Personalized Greeting:** Users are greeted by their first name on the home page for a more personalized experience.
 *   **Real-time Energy Monitoring:** Track the energy consumption of your smart devices in real-time.
 *   **Consumption Analytics:** Visualize your energy usage patterns through intuitive charts and graphs.
 *   **Carbon Footprint Tracking:** Understand your environmental impact and take steps to reduce it.
@@ -15,7 +16,7 @@ The application is structured into the following pages:
 
 *   **`index.html`**: The landing page with user login and registration.
 *   **`signup.html`**: The user registration page.
-*   **`home.html`**: The main user dashboard, providing an overview of energy consumption and savings.
+*   **`home.html`**: The main user dashboard, providing an overview of energy consumption and savings, now featuring a personalized welcome message.
 *   **`devices.html`**: A page to view and manage all connected smart devices.
 *   **`device_details.html`**: Provides a detailed view of a specific device's energy consumption.
 *   **`total_consumption.html`**: Displays aggregated energy consumption data with historical trends.

@@ -54,9 +54,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// Other existing functions (e.g., for live energy, etc.) would go here
-
-// Example of how to update live energy (assuming you have a function for it)
+// Live Energy Usage functions
 function updateLiveEnergy(kwh, message, status) {
     const energyKwhElement = document.getElementById('energy-kwh');
     const energyMessageElement = document.getElementById('energy-message');
@@ -96,3 +94,32 @@ setInterval(() => {
     }
     updateLiveEnergy(randomKwh, message, status);
 }, 5000); // Update every 5 seconds
+
+// Current Bill Cycle Usage Toggle Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const usageToggle = document.getElementById('usageToggle');
+    const billCycleValue = document.getElementById('billCycleValue');
+    const billCycleUnit = document.getElementById('billCycleUnit');
+
+    // Static values for demonstration
+    const currentKwhUsage = 250;
+    const currentCostUsage = 75.00; // Example: 250 kWh * $0.30/kWh
+
+    function updateBillCycleDisplay() {
+        if (usageToggle.checked) { // If checked, show cost
+            billCycleValue.textContent = `$${currentCostUsage.toFixed(2)}`;
+            billCycleUnit.textContent = 'Cost';
+        } else { // Show kWh
+            billCycleValue.textContent = currentKwhUsage;
+            billCycleUnit.textContent = 'kWh';
+        }
+    }
+
+    // Add event listener for the toggle switch
+    if (usageToggle) {
+        usageToggle.addEventListener('change', updateBillCycleDisplay);
+    }
+
+    // Set initial display
+    updateBillCycleDisplay();
+});

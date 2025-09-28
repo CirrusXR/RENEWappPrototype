@@ -111,8 +111,18 @@
             </header>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- New: Current Bill Cycle Usage Card -->
+                <div class="glass-panel card-shadow p-6 text-center">
+                    <h2 class="text-xl font-semibold text-neutral-white mb-4">Current Bill Cycle Usage</h2>
+                    <div class="flex items-baseline justify-center">
+                        <p class="text-5xl font-bold text-primary-green">250</p>
+                        <p class="ml-2 text-lg text-secondary-gray">kWh</p>
+                    </div>
+                    <p class="mt-2 text-secondary-gray">So far this billing period.</p>
+                </div>
+
                 <!-- Energy Usage Card -->
-                <div id="live-energy-card" class="glass-panel card-shadow p-6 md:col-span-2 text-center">
+                <div id="live-energy-card" class="glass-panel card-shadow p-6 text-center">
                     <h2 class="text-xl font-semibold text-neutral-white mb-4">Live Energy Usage</h2>
                     <div class="flex items-baseline justify-center">
                         <p id="energy-kwh" class="text-5xl font-bold text-primary-green">1.2</p>

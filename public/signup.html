@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RENEW Sign Up</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'primary-blue': '#213958',
+                'primary-green': '#5CBE67',
+                'secondary-gray': '#8C8C8C',
+                'accent-red': '#D34E4E',
+                'neutral-white': '#FFFFFF',
+              }
+            }
+          }
+        }
+    </script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyAvuIx_o7Ud5estJ9dtzb3d3B4fCWRFm1g",
+            authDomain: "renewapp-new.firebaseapp.com",
+            projectId: "renewapp-new",
+            storageBucket: "renewapp-new.appspot.com",
+            messagingSenderId: "1067131425741",
+            appId: "1:1067131425741:web:714763cc8965013431ea84",
+            measurementId: "G-R5P84P53ET"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+</head>
+<body class="bg-primary-blue text-neutral-white">
+    <div class="flex min-h-screen">
+        <!-- Left Column (Branding) -->
+        <div class="hidden lg:flex lg:w-1/2 items-center justify-center bg-cover bg-center p-12" style="background-image: url('https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=2874&auto=format&fit=crop');">
+            <div class="text-center bg-black/50 p-8 rounded-xl backdrop-blur-sm">
+                <img src="images/logo.png" alt="RENEW Logo" class="w-48 h-auto mx-auto mb-4">
+                <h1 class="text-4xl font-bold mb-2">A Greener Future, Together.</h1>
+                <p class="text-lg text-neutral-white/80">Join our community to track your energy use, reduce your carbon footprint, and save money.</p>
+            </div>
+        </div>
+
+        <!-- Right Column (Sign Up Form) -->
+        <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+            <div class="w-full max-w-md">
+                <div class="text-center lg:hidden mb-8">
+                    <img src="images/logo.png" alt="RENEW Logo" class="w-32 h-auto mx-auto mb-2">
+                    <h1 class="text-3xl font-bold">Create Account</h1>
+                </div>
+
+                <div class="w-full p-8 text-center bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl shadow-xl">
+                    <h1 class="text-2xl font-semibold mb-6">Create your Account</h1>
+                    <form class="space-y-6">
+                        <div>
+                            <label for="fullName" class="block text-secondary-gray font-medium mb-2 text-left">Full Name</label>
+                            <div class="relative">
+                                <input type="text" id="fullName" name="fullName" class="w-full p-3 border border-white/20 rounded-xl text-neutral-white placeholder:text-neutral-white/50 bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent transition-all" placeholder="John Doe" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-secondary-gray font-medium mb-2 text-left">Email</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-gray">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" /></svg>
+                                </span>
+                                <input type="email" id="email" name="email" class="w-full pl-10 p-3 border border-white/20 rounded-xl text-neutral-white placeholder:text-neutral-white/50 bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent transition-all" placeholder="user@gmail.com" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="password" class="block text-secondary-gray font-medium mb-2 text-left">Password</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-gray">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                </span>
+                                <input type="password" id="password" name="password" class="w-full pl-10 p-3 border border-white/20 rounded-xl text-neutral-white placeholder:text-neutral-white/50 bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent transition-all" placeholder="***********" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full p-3 rounded-xl font-semibold text-neutral-white bg-primary-green hover:bg-primary-green/80 transition-colors">Sign Up</button>
+                    </form>
+
+                    <div class="mt-8 text-secondary-gray">
+                        Already have an account? <a href="index.html" class="font-semibold text-neutral-white hover:underline transition-colors">Log In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="js/signup.js"></script>
+</body>
+</html>

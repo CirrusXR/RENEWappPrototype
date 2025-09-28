@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RENEW Carbon Impact</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'primary-blue': '#213958',
+                'primary-green': '#5CBE67',
+                'secondary-gray': '#8C8C8C',
+                'accent-red': '#D34E4E',
+                'neutral-white': '#FFFFFF',
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        /* General Body Style */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #213958; /* Primary Blue */
+            color: #FFFFFF; /* Neutral White */
+            padding-bottom: 5rem;
+        }
+
+        /* Glassmorphism Panel Component */
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Animation for the CO2 number */
+        @keyframes count-up {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .co2-number {
+            animation: count-up 1s ease-out;
+        }
+
+        /* Animation for the impact cards */
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .impact-card {
+            animation: fade-in 1s ease-out;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <div class="flex-grow flex flex-col items-center py-10 px-4">
+        <main class="mx-auto max-w-4xl w-full">
+            <header class="py-4 mb-8 text-center">
+                <h1 class="text-4xl font-bold text-neutral-white drop-shadow-lg">Your Positive Impact</h1>
+                <p class="text-sm text-secondary-gray mt-1">See how your actions are making a difference.</p>
+            </header>
+            
+            <div class="glass-panel p-8 text-center mb-8">
+                <h2 class="text-2xl font-semibold text-neutral-white mb-4">You've reduced your CO2 emissions by:</h2>
+                <p class="co2-number text-7xl font-bold text-primary-green">15.8 <span class="text-4xl text-secondary-gray">kg</span></p>
+                <p class="mt-2 text-secondary-gray">this week!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="impact-card glass-panel p-6 text-center">
+                    <p class="text-5xl mb-4">🌳</p>
+                    <h3 class="text-xl font-semibold text-neutral-white mb-2">Like Planting 5 Trees</h3>
+                    <p class="text-secondary-gray">Your energy savings have the same carbon-reducing effect as planting 5 mature trees.</p>
+                </div>
+                <div class="impact-card glass-panel p-6 text-center" style="animation-delay: 0.2s;">
+                    <p class="text-5xl mb-4">🚗</p>
+                    <h3 class="text-xl font-semibold text-neutral-white mb-2">100 Miles in a Tesla</h3>
+                    <p class="text-secondary-gray">You've saved enough energy to power a Tesla Model 3 for over 100 miles.</p>
+                </div>
+            </div>
+
+            <div class="glass-panel p-8 text-center">
+                <h2 class="text-2xl font-semibold text-neutral-white mb-4">Keep up the great work!</h2>
+                <p class="text-secondary-gray mb-6">Here are some tips to reduce your carbon footprint even more:</p>
+                <ul class="text-left space-y-4">
+                    <li class="flex items-start">
+                        <span class="text-primary-green mr-4">✓</span>
+                        <span>Unplug devices when not in use. Even in standby mode, they consume energy.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-primary-green mr-4">✓</span>
+                        <span>Switch to LED light bulbs. They use up to 80% less energy than traditional bulbs.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-primary-green mr-4">✓</span>
+                        <span>Wash your clothes in cold water. It's just as effective and saves a lot of energy.</span>
+                    </li>
+                </ul>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg border-t-2 border-neutral-white sm-hidden">
+        <nav class="flex justify-around items-center h-16">
+            <a href="home.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green" data-tab="home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <path d="M9 22V12h6v10"></path>
+                </svg>
+                <span class="mt-1 text-xs">Home</span>
+            </a>
+            <a href="devices.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green" data-tab="devices">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 11V5.5L12 2 8 5.5V11H6V22h12V11z" />
+                </svg>
+                <span class="mt-1 text-xs">Devices</span>
+            </a>
+            <a href="community.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green" data-tab="community">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 19.22H5.78a2 2 0 0 1-1.74-2.8l2.64-7.55a2 2 0 0 1 1.74-1.65h10.42a2 2 0 0 1 1.74 1.65l2.64 7.55a2 2 0 0 1-1.74 2.8z" />
+                    <circle cx="12" cy="7" r="2" />
+                </svg>
+                <span class="mt-1 text-xs">Community</span>
+            </a>
+            <a href="savings.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green" data-tab="savings">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+                <span class="mt-1 text-xs">Savings</span>
+            </a>
+        </nav>
+    </div>
+</body>
+</html>

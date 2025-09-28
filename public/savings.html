@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renew Savings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'primary-blue': '#213958',
+                'primary-green': '#5CBE67',
+                'secondary-gray': '#8C8C8C',
+                'accent-red': '#D34E4E',
+                'neutral-white': '#FFFFFF',
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #213958;
+            color: #FFFFFF;
+            padding-bottom: 5rem;
+        }
+
+        /* Glassmorphic Panel/Card Style */
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 200px;
+            width: 100%;
+        }
+
+        .chart-bar {
+            background-color: #5cbe67;
+            transition: height 0.5s ease-in-out;
+            width: 15px; /* Fixed width for the bars */
+            border-radius: 4px;
+        }
+
+        .chart-bar.current-day {
+            background-color: #D34E4E;
+        }
+
+        .nav-item {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .nav-item.active {
+            color: #5CBE67;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <div id="app-root" class="flex-grow flex flex-col items-center py-10 px-4">
+        <main class="mx-auto max-w-4xl w-full">
+            <header class="py-4 mb-8 text-center">
+                <h1 class="text-4xl font-bold text-neutral-white">Your Savings</h1>
+                <p class="text-sm text-secondary-gray mt-1">Track your progress and see your impact.</p>
+            </header>
+
+            <section class="glass-panel p-6 rounded-2xl mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2l3.09 6.36L22 9.27l-5 4.87L18.18 22 12 18.42 5.82 22 7.82 14.14 3 9.27l8.91-1.27z"/>
+                        </svg>
+                        <h2 class="text-xl font-bold text-neutral-white">Energy Savings</h2>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center glass-panel p-4 rounded-xl">
+                        <span class="text-secondary-gray text-sm">This Week</span>
+                        <span class="text-neutral-white font-bold text-lg">€15.20</span>
+                    </div>
+                    <div class="flex justify-between items-center glass-panel p-4 rounded-xl">
+                        <span class="text-secondary-gray text-sm">Last Month</span>
+                        <span class="text-neutral-white font-bold text-lg">€68.50</span>
+                    </div>
+                    <div class="flex justify-between items-center glass-panel p-4 rounded-xl">
+                        <span class="text-secondary-gray text-sm">This Year</span>
+                        <span class="text-neutral-white font-bold text-lg">€821.25</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="glass-panel p-6 rounded-2xl mb-6">
+                <h2 class="text-xl font-bold text-neutral-white mb-4">Weekly Usage</h2>
+                <div class="relative w-full h-40">
+                    <div id="bar-chart-container" class="absolute inset-0 flex items-end justify-around pb-4 pt-8">
+                        </div>
+                    <div class="absolute bottom-0 left-0 right-0 h-[1px] bg-neutral-white/30"></div>
+                </div>
+                <div class="flex justify-around text-xs text-secondary-gray mt-2">
+                    <span>Mon</span>
+                    <span>Tue</span>
+                    <span>Wed</span>
+                    <span>Thu</span>
+                    <span>Fri</span>
+                    <span>Sat</span>
+                    <span>Sun</span>
+                </div>
+            </section>
+
+            <section class="glass-panel p-6 rounded-2xl">
+                <h2 class="text-xl font-bold text-neutral-white mb-4">Daily Insights</h2>
+                <ul class="space-y-4">
+                    <li class="glass-panel p-4 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                            </svg>
+                            <p class="text-neutral-white text-md">Saved **12%** today vs. yesterday</p>
+                        </div>
+                        <span class="text-primary-green text-sm font-semibold">€2.50</span>
+                    </li>
+                    <li class="glass-panel p-4 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/>
+                                <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+                            </svg>
+                            <p class="text-neutral-white text-md">Your smart plug is saving **€0.50** per day.</p>
+                        </div>
+                        <span class="text-primary-green text-sm font-semibold">€0.50</span>
+                    </li>
+                    <li class="glass-panel p-4 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2l3.09 6.36L22 9.27l-5 4.87L18.18 22 12 18.42 5.82 22 7.82 14.14 3 9.27l8.91-1.27z"/>
+                            </svg>
+                            <p class="text-neutral-white text-md">**5%** less energy used this week.</p>
+                        </div>
+                        <span class="text-primary-green text-sm font-semibold">€1.20</span>
+                    </li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg border-t-2 border-neutral-white">
+        <nav class="flex justify-around items-center h-16">
+            <a href="/home.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium focus:outline-none text-secondary-gray hover:text-primary-green" data-tab="home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <path d="M9 22V12h6v10"></path>
+                </svg>
+                <span class="mt-1 text-xs">Home</span>
+            </a>
+            <a href="/devices.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none" data-tab="devices">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 11V5.5L12 2 8 5.5V11H6V22h12V11z" />
+                </svg>
+                <span class="mt-1 text-xs">Devices</span>
+            </a>
+            <a href="/community.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green" data-tab="community">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 19.22H5.78a2 2 0 0 1-1.74-2.8l2.64-7.55a2 2 0 0 1 1.74-1.65h10.42a2 2 0 0 1 1.74 1.65l2.64 7.55a2 2 0 0 1-1.74 2.8z" />
+                    <circle cx="12" cy="7" r="2" />
+                </svg>
+                <span class="mt-1 text-xs">Community</span>
+            </a>
+            <a href="#savings" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-primary-green active" data-tab="savings">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+                <span class="mt-1 text-xs">Savings</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="js/savings.js"></script>
+</body>
+</html>

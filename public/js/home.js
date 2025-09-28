@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateBillCycleDisplay() {
         if (usageToggle.checked) { // If checked, show cost
-            billCycleValue.textContent = `$${currentCostUsage.toFixed(2)}`;
+            billCycleValue.textContent = `€${currentCostUsage.toFixed(2)}`;
             billCycleUnit.textContent = 'Cost';
         } else { // Show kWh
             billCycleValue.textContent = currentKwhUsage;

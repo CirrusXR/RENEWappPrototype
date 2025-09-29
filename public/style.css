@@ -182,6 +182,74 @@ body {
     display: inline-block;
 }
 
+
 .community-link:hover {
     text-decoration: underline;
 }
+
+/* Live Energy Usage Pulse Effects */
+        .pulse-green {
+            animation: pulse-green 2s infinite;
+            background-color: rgba(92, 190, 103, 0.1); /* Light green background */
+            border-color: rgba(92, 190, 103, 0.7); /* Green border */
+        }
+
+        .pulse-yellow {
+            animation: pulse-yellow 2s infinite;
+            background-color: rgba(255, 193, 7, 0.1); /* Light yellow background */
+            border-color: rgba(255, 193, 7, 0.7); /* Yellow border */
+        }
+
+        .pulse-red {
+            animation: pulse-red 2s infinite;
+            background-color: rgba(211, 78, 78, 0.1); /* Light red background */
+            border-color: rgba(211, 78, 78, 0.7); /* Red border */
+        }
+
+@keyframes pulse-green {
+    from { box-shadow: 0 0 10px rgba(0, 128, 0, 0.5); }
+    to { box-shadow: 0 0 20px rgba(0, 128, 0, 0.8); }
+}
+
+@keyframes pulse-yellow {
+    from { box-shadow: 0 0 10px rgba(255, 255, 0, 0.5); }
+    to { box-shadow: 0 0 20px rgba(255, 255, 0, 0.8); }
+}
+
+@keyframes pulse-red {
+    from { box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+    to { box-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
+}
+
+/* Linear Progress Bar */
+.linear-progress-bar-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin-top: 1rem;
+}
+
+.linear-progress-bar-fill {
+    height: 10px;
+    background-color: #5CBE67; /* Primary Green */
+    border-radius: 5px;
+    width: 0%; /* Initial width */
+    transition: width 0.3s ease-in-out;
+}
+
+/* Linear Progress Bar */
+.linear-progress-bar-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin-top: 1rem;
+}
+
+.linear-progress-bar-fill {
+    height: 10px;
+    background-color: #5CBE67; /* Primary Green */
+    border-radius: 5px;
+    width: 0%; /* Initial width */
+    transition: width 0.3s ease-in-out;
+}
+

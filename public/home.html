@@ -103,8 +103,8 @@
     <div class="flex-grow flex flex-col items-center py-10 px-4">
         <main class="mx-auto max-w-4xl w-full">
             <header class="py-4 mb-8 text-center">
-        <div class="user-info">
-            <h2 class="text-4xl">Hello there, <span id="userNameDisplay"></span>!</h2>
+        <div class="header-content">
+            <h1 class="text-4xl md:text-5xl"><span id="greetingMessage"></span>, <span id="userNameDisplay">User</span>!</h1>
             <p>Ready to make a difference?</p>
         </div>
                 <p class="text-sm text-secondary-gray mt-1">Here's a summary of your energy usage.</p>
@@ -126,6 +126,11 @@
                         <p id="billCycleValue" class="text-5xl font-bold text-primary-green">250</p>
                         <p id="billCycleUnit" class="ml-2 text-lg text-secondary-gray">kWh</p>
                     </div>
+                    
+
+                    <div class="w-full bg-gray-700 rounded-full h-2.5 mt-4">
+                        <div id="billCycleProgressBar" class="bg-primary-green h-2.5 rounded-full" style="width: 50%"></div>
+                    </div>
                     <p class="mt-2 text-secondary-gray">So far this billing period.</p>
                 </div>
 
@@ -136,12 +141,12 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
                     </div>
-                    <h2 class="text-xl font-semibold text-neutral-white mb-4">Live Energy Usage</h2>
+                    <h2 id="live-energy-title" class="text-xl font-semibold text-neutral-white mb-4">Live Energy Usage</h2>
                     <div class="flex items-baseline justify-center">
                         <p id="energy-kwh" class="text-5xl font-bold text-primary-green">1.2</p>
-                        <p class="ml-2 text-lg text-secondary-gray">kWh</p>
+                        <p class="ml-2 text-lg text-secondary-gray">€/kWh</p>
                     </div>
-                    <p id="energy-message" class="mt-2 text-secondary-gray">Your home is currently consuming...</p>
+                    <p id="energy-message" class="mt-2 text-secondary-gray"></p>
                 </div>
 
                 <!-- Savings Card -->

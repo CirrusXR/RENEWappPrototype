@@ -3,150 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Renew Savings</title>
+    <title>RENEW Savings</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Load Lucide Icons for cleaner vectors -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
           theme: {
             extend: {
               colors: {
-                'primary-blue': '#213958',
-                'primary-green': '#5CBE67',
-                'secondary-gray': '#8C8C8C',
-                'accent-red': '#D34E4E',
-                'neutral-white': '#FFFFFF',
+                // Mapped to the modern dark theme palette (Consistent across all screens)
+                'primary-blue': '#0F172A', // Dark Slate Blue (Background)
+                'primary-green': '#34D399', // Vibrant Emerald (Accent)
+                'secondary-gray': '#94A3B8', // Muted Slate (Labels)
+                'accent-red': '#F87171', // Soft Red (Danger/Logout)
+                'accent-yellow': '#FBBF24', // Amber (Live Rate/Savings Accent)
+                'neutral-white': '#F1F5F9', // Off-White (Text)
+                'card-bg': '#1E293B', // Darker Card Background
+                'rebot-blue': '#4F46E5', // Deep Indigo Blue for ReBot Button
               }
             }
           }
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #213958;
-            color: #FFFFFF;
-            padding-bottom: 5rem;
+        /* Reset margins/padding */
+        html, body {
+            margin: 0;
+            padding: 0; 
         }
 
-        /* Glassmorphic Panel/Card Style */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--tw-colors-primary-blue);
+            color: var(--tw-colors-neutral-white);
+            padding-bottom: 5rem;
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism Panel Component (Consistent) */
         .glass-panel {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: rgba(30, 41, 59, 0.6); /* Use card-bg with high opacity */
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Deeper shadow */
         }
         
-        .chart-container {
-            position: relative;
-            height: 200px;
-            width: 100%;
-        }
-
-        .chart-bar {
-            background-color: #5cbe67;
-            transition: height 0.5s ease-in-out;
-            width: 15px; /* Fixed width for the bars */
-            border-radius: 4px;
-        }
-
-        .chart-bar.current-day {
-            background-color: #D34E4E;
-        }
-
+        /* --- Navigation Bar Styling (Consistent) --- */
         .nav-item {
             transition: all 0.2s ease-in-out;
+            color: var(--tw-colors-secondary-gray); 
+            transition: all 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
         
         .nav-item.active {
-            color: #5CBE67;
+            color: var(--tw-colors-neutral-white); /* Active text/icon color set to white */
             font-weight: 600;
+
+            /* Green Glow Effect */
+            box-shadow: 0 0 15px rgba(52, 211, 153, 0.6), /* primary-green with opacity */
+                        0 0 5px rgba(52, 211, 153, 0.4); 
+            border-radius: 0.5rem;
+            padding: 0.25rem 0; 
+            margin: -0.25rem 0; 
+        }
+        
+        /* Chart specific styling */
+        .chart-bar {
+            /* Uses primary-green from Tailwind config */
+            transition: height 0.5s ease-in-out;
+            width: 15px;
+            border-radius: 4px 4px 0 0; /* Only round the top */
         }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
-    <div id="app-root" class="flex-grow flex flex-col items-center py-10 px-4">
+    <div id="app-root" class="flex-grow flex flex-col items-center py-10 px-4 bg-primary-blue">
         <main class="mx-auto max-w-4xl w-full">
             <header class="py-4 mb-8 text-center">
-                <h1 class="text-4xl font-bold text-neutral-white">Your Savings</h1>
+                <h1 class="text-4xl font-bold text-neutral-white drop-shadow-lg">Your Savings</h1>
                 <p class="text-sm text-secondary-gray mt-1">Track your progress and see your impact.</p>
             </header>
 
+            <!-- Total Savings Section -->
             <section class="glass-panel p-6 rounded-2xl mb-6">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2l3.09 6.36L22 9.27l-5 4.87L18.18 22 12 18.42 5.82 22 7.82 14.14 3 9.27l8.91-1.27z"/>
-                        </svg>
+                        <!-- Star icon for savings -->
+                        <i data-lucide="award" class="h-6 w-6 text-primary-green"></i>
                         <h2 class="text-xl font-bold text-neutral-white">Energy Savings</h2>
                     </div>
                 </div>
                 <div class="space-y-4">
-                    <div class="flex justify-between items-center glass-panel p-4 rounded-xl">
+                    <!-- Cards use the darker card-bg color -->
+                    <div class="flex justify-between items-center bg-card-bg p-4 rounded-xl">
                         <span class="text-secondary-gray text-sm">This Week</span>
-                        <span class="text-neutral-white font-bold text-lg">€15.20</span>
+                        <span class="text-neutral-white font-bold text-lg text-primary-green">€15.20</span>
                     </div>
-                    <div class="flex justify-between items-center glass-panel p-4 rounded-xl">
+                    <div class="flex justify-between items-center bg-card-bg p-4 rounded-xl">
                         <span class="text-secondary-gray text-sm">Last Month</span>
-                        <span class="text-neutral-white font-bold text-lg">€68.50</span>
+                        <span class="text-neutral-white font-bold text-lg text-primary-green">€68.50</span>
                     </div>
-                    <div class="flex justify-between items-center glass-panel p-4 rounded-xl">
+                    <div class="flex justify-between items-center bg-card-bg p-4 rounded-xl">
                         <span class="text-secondary-gray text-sm">This Year</span>
-                        <span class="text-neutral-white font-bold text-lg">€821.25</span>
+                        <span class="text-neutral-white font-bold text-lg text-primary-green">€821.25</span>
                     </div>
                 </div>
             </section>
 
+            <!-- Weekly Usage Chart Section -->
             <section class="glass-panel p-6 rounded-2xl mb-6">
-                <h2 class="text-xl font-bold text-neutral-white mb-4">Weekly Usage</h2>
+                <h2 class="text-xl font-bold text-neutral-white mb-4">Weekly Usage (kWh)</h2>
                 <div class="relative w-full h-40">
+                    <!-- Bar chart container for dynamic bars -->
                     <div id="bar-chart-container" class="absolute inset-0 flex items-end justify-around pb-4 pt-8">
-                        </div>
-                    <div class="absolute bottom-0 left-0 right-0 h-[1px] bg-neutral-white/30"></div>
+                        <!-- Bars will be generated here by JavaScript -->
+                    </div>
+                    <!-- Axis line -->
+                    <div class="absolute bottom-4 left-0 right-0 h-[1px] bg-neutral-white/30"></div>
                 </div>
-                <div class="flex justify-around text-xs text-secondary-gray mt-2">
-                    <span>Mon</span>
-                    <span>Tue</span>
-                    <span>Wed</span>
-                    <span>Thu</span>
-                    <span>Fri</span>
-                    <span>Sat</span>
-                    <span>Sun</span>
+                <div id="bar-labels" class="flex justify-around text-xs text-secondary-gray mt-2">
+                    <!-- Labels will be generated here by JavaScript -->
                 </div>
             </section>
 
-            <section class="glass-panel p-6 rounded-2xl">
+            <!-- Daily Insights Section -->
+            <section class="glass-panel p-6 rounded-2xl mb-24">
                 <h2 class="text-xl font-bold text-neutral-white mb-4">Daily Insights</h2>
                 <ul class="space-y-4">
-                    <li class="glass-panel p-4 rounded-xl flex items-center justify-between">
+                    <!-- Insight 1: Saved vs. Yesterday -->
+                    <li class="bg-card-bg p-4 rounded-xl flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                            </svg>
-                            <p class="text-neutral-white text-md">Saved **12%** today vs. yesterday</p>
+                            <i data-lucide="trending-down" class="h-6 w-6 text-primary-green"></i>
+                            <p class="text-neutral-white text-md">Saved <strong class="text-primary-green">12%</strong> today vs. yesterday</p>
                         </div>
                         <span class="text-primary-green text-sm font-semibold">€2.50</span>
                     </li>
-                    <li class="glass-panel p-4 rounded-xl flex items-center justify-between">
+                    <!-- Insight 2: Smart Plug Savings -->
+                    <li class="bg-card-bg p-4 rounded-xl flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/>
-                                <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
-                            </svg>
-                            <p class="text-neutral-white text-md">Your smart plug is saving **€0.50** per day.</p>
+                            <i data-lucide="zap" class="h-6 w-6 text-accent-yellow"></i>
+                            <p class="text-neutral-white text-md">Your smart plug is saving <strong class="text-accent-yellow">€0.50</strong> per day.</p>
                         </div>
-                        <span class="text-primary-green text-sm font-semibold">€0.50</span>
+                        <span class="text-accent-yellow text-sm font-semibold">€0.50</span>
                     </li>
-                    <li class="glass-panel p-4 rounded-xl flex items-center justify-between">
+                    <!-- Insight 3: Weekly Trend -->
+                    <li class="bg-card-bg p-4 rounded-xl flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2l3.09 6.36L22 9.27l-5 4.87L18.18 22 12 18.42 5.82 22 7.82 14.14 3 9.27l8.91-1.27z"/>
-                            </svg>
-                            <p class="text-neutral-white text-md">**5%** less energy used this week.</p>
+                            <i data-lucide="gauge" class="h-6 w-6 text-primary-green"></i>
+                            <p class="text-neutral-white text-md"><strong class="text-primary-green">5%</strong> less energy used this week.</p>
                         </div>
                         <span class="text-primary-green text-sm font-semibold">€1.20</span>
                     </li>
@@ -155,37 +165,73 @@
         </main>
     </div>
 
-    <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg border-t-2 border-neutral-white">
+    <!-- Mobile Navigation Bar (Fixed Bottom) -->
+    <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 bg-white/5 backdrop-blur-md rounded-t-3xl shadow-lg border-t-2 border-white/10">
         <nav class="flex justify-around items-center h-16">
-            <a href="/home.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium focus:outline-none text-secondary-gray hover:text-primary-green" data-tab="home">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <path d="M9 22V12h6v10"></path>
-                </svg>
+            <a href="home.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium focus:outline-none text-secondary-gray hover:text-primary-green transition-colors" data-tab="home">
+                <i data-lucide="home" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Home</span>
             </a>
-            <a href="/devices.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none" data-tab="devices">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M16 11V5.5L12 2 8 5.5V11H6V22h12V11z" />
-                </svg>
+            <a href="devices.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none transition-colors" data-tab="devices">
+                <i data-lucide="plug" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Devices</span>
             </a>
-            <a href="/community.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green" data-tab="community">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17 19.22H5.78a2 2 0 0 1-1.74-2.8l2.64-7.55a2 2 0 0 1 1.74-1.65h10.42a2 2 0 0 1 1.74 1.65l2.64 7.55a2 2 0 0 1-1.74 2.8z" />
-                    <circle cx="12" cy="7" r="2" />
-                </svg>
+            <a href="community.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none transition-colors" data-tab="community">
+                <i data-lucide="users" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Community</span>
             </a>
-            <a href="#savings" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-primary-green active" data-tab="savings">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
+            <a href="savings.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium text-neutral-white focus:outline-none active transition-colors" data-tab="savings">
+                <i data-lucide="trending-up" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Savings</span>
             </a>
         </nav>
     </div>
 
-    <script src="js/savings.js"></script>
+    <script>
+        // Data for the weekly usage chart mockup
+        const weeklyUsage = [
+            { day: 'Mon', usage: 60, current: false },
+            { day: 'Tue', usage: 75, current: false },
+            { day: 'Wed', usage: 90, current: false },
+            { day: 'Thu', usage: 50, current: false },
+            { day: 'Fri', usage: 100, current: true }, // Highlighted as the current day
+            { day: 'Sat', usage: 40, current: false },
+            { day: 'Sun', usage: 70, current: false },
+        ];
+
+        function renderBarChart() {
+            const chartContainer = document.getElementById('bar-chart-container');
+            const maxUsage = Math.max(...weeklyUsage.map(d => d.usage));
+            
+            chartContainer.innerHTML = weeklyUsage.map(data => {
+                const heightPercentage = (data.usage / maxUsage) * 100;
+                const barColorClass = data.current ? 'bg-accent-red' : 'bg-primary-green';
+
+                return `
+                    <div class="flex flex-col items-center justify-end h-full">
+                        <div 
+                            class="chart-bar ${barColorClass}" 
+                            style="height: ${heightPercentage * 0.9}%;"
+                            title="${data.day}: ${data.usage} kWh"
+                        ></div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Render labels separately for better spacing control
+            const labelContainer = document.getElementById('bar-labels');
+            labelContainer.innerHTML = weeklyUsage.map(data => `
+                <span class="text-xs text-secondary-gray">${data.day.substring(0, 3)}</span>
+            `).join('');
+        }
+        
+        // Initialize Lucide icons and the mock chart on load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            renderBarChart();
+        });
+    </script>
 </body>
 </html>

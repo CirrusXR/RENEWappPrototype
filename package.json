@@ -1,0 +1,26 @@
+{
+  "name": "renewappnew",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CirrusXR/RENEWappPrototype.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CirrusXR/RENEWappPrototype/issues"
+  },
+  "homepage": "https://github.com/CirrusXR/RENEWappPrototype#readme",
+  "description": "",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "openai": "^5.23.1"
+  }
+}

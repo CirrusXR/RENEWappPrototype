@@ -7,176 +7,222 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Load Lucide Icons for cleaner vectors -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
           theme: {
             extend: {
               colors: {
-                'primary-blue': '#213958',
-                'primary-green': '#5CBE67',
-                'secondary-gray': '#8C8C8C',
-                'accent-red': '#D34E4E',
-                'neutral-white': '#FFFFFF',
+                // Mapped to the modern dark theme palette
+                'primary-blue': '#0F172A', // Dark Slate Blue (Background)
+                'primary-green': '#34D399', // Vibrant Emerald (Accent)
+                'secondary-gray': '#94A3B8', // Muted Slate (Labels)
+                'accent-red': '#F87171', // Soft Red (Danger/Logout)
+                'accent-yellow': '#FBBF24', // Amber (Live Rate/Savings Accent)
+                'neutral-white': '#F1F5F9', // Off-White (Text)
+                'card-bg': '#1E293B', // Darker Card Background
+                'rebot-blue': '#4F46E5', // Deep Indigo Blue for ReBot Button
               }
             }
           }
         }
     </script>
     <style>
+        /* General Body Style */
         body {
             font-family: 'Inter', sans-serif;
-            background: #213958;
-            color: #FFFFFF;
+            background-color: var(--tw-colors-primary-blue);
+            color: var(--tw-colors-neutral-white);
             padding-bottom: 5rem;
+            min-height: 100vh;
         }
 
-        /* Glassmorphic Panel/Card Style */
+        /* Glassmorphism Panel Component (REFINED) */
         .glass-panel {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: rgba(30, 41, 59, 0.6); /* Use card-bg with high opacity */
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Deeper shadow */
         }
-
-        .tab-button {
-            transition: all 0.3s ease-in-out;
-            font-weight: 500;
-        }
-
-        .tab-button.active {
-            font-weight: 700;
-            color: #FFFFFF;
-            background-color: #5CBE67;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            border-radius: 9999px;
-        }
-
-        .sub-tab-button {
-            transition: all 0.3s ease-in-out;
-            font-weight: 500;
-            color: #8C8C8C;
-        }
-
-        .sub-tab-button.active {
-            font-weight: 700;
-            color: #5CBE67;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .leaderboard-item {
-            transition: transform 0.2s ease-in-out;
+        
+        /* Card Shadow/Hover Effect (Refined depth) - Used for individual leaderboard items */
+        .card-shadow {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .leaderboard-item:hover {
             transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: var(--tw-colors-primary-green);
         }
 
+        /* --- Primary Tab Styling (Solid Pill) --- */
+        .tab-button {
+            transition: all 0.3s ease-in-out;
+            font-weight: 500;
+            color: var(--tw-colors-secondary-gray); /* Default text color for non-active link tabs */
+        }
+
+        .tab-button.active {
+            font-weight: 700;
+            color: var(--tw-colors-primary-blue); /* Text color inside active green tab */
+            background-color: var(--tw-colors-primary-green);
+            /* Soft glow matching the green accent */
+            box-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+            border-radius: 9999px;
+        }
+
+        /* --- Secondary Tab Styling (Solid Pill within outer glass-panel) --- */
+        .sub-tab-button {
+            transition: all 0.3s ease-in-out;
+            font-weight: 500;
+            color: var(--tw-colors-secondary-gray);
+            /* Reset button style for better appearance inside the glass panel container */
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+        }
+
+        /* FIX: Active sub-tab now uses green block/pill matching the primary tab active state */
+        .sub-tab-button.active {
+            font-weight: 700;
+            color: var(--tw-colors-primary-blue); /* Dark text on bright background */
+            background-color: var(--tw-colors-primary-green);
+            box-shadow: 0 0 10px rgba(52, 211, 153, 0.4); 
+            border-radius: 9999px;
+        }
+
+        /* --- Navigation Bar Styling (Consistent) --- */
         .nav-item {
             transition: all 0.2s ease-in-out;
+            color: var(--tw-colors-secondary-gray); 
+            transition: all 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
         
         .nav-item.active {
-            color: #5CBE67;
+            color: var(--tw-colors-neutral-white); /* Active text/icon color set to white */
             font-weight: 600;
+
+            /* Green Glow Effect */
+            box-shadow: 0 0 15px rgba(52, 211, 153, 0.6), /* primary-green with opacity */
+                        0 0 5px rgba(52, 211, 153, 0.4); 
+            border-radius: 0.5rem;
+            padding: 0.25rem 0; 
+            margin: -0.25rem 0; 
         }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
-    <div id="app-root" class="flex-grow flex flex-col items-center py-10 px-4">
+    <!-- ADDED bg-primary-blue to ensure background is always dark -->
+    <div id="app-root" class="flex-grow flex flex-col items-center py-10 px-4 bg-primary-blue">
         <main class="mx-auto max-w-4xl w-full">
             <header class="py-4 mb-8 text-center">
                 <h1 class="text-4xl font-bold text-neutral-white">Community Hub</h1>
                 <p class="text-sm text-secondary-gray mt-1">Connect with local projects and make a difference.</p>
             </header>
 
+            <!-- Primary Tabs (Projects vs Leaderboards) -->
+            <!-- Removed bg-card-bg/50 as glass-panel already provides the background -->
             <div class="flex p-1 mb-6 rounded-full max-w-sm mx-auto glass-panel">
-                <a href="community_projects.html" class="tab-button flex-1 py-2 px-6 text-center text-sm rounded-full text-primary-green transition-all duration-300 ease-in-out">
+                <a href="community_projects.html" class="tab-button flex-1 py-2 px-6 text-center text-sm rounded-full text-secondary-gray hover:text-primary-green transition-all duration-300 ease-in-out">
                     Projects
                 </a>
-                <a href="#" class="tab-button active flex-1 py-2 px-6 text-center text-sm rounded-full bg-primary-green text-neutral-white transition-all duration-300 ease-in-out">
+                <a href="#" class="tab-button active flex-1 py-2 px-6 text-center text-sm rounded-full transition-all duration-300 ease-in-out">
                     Leaderboards
                 </a>
             </div>
 
             <div id="content-container">
                 <div id="leaderboards-view">
-                    <div class="flex p-1 mb-6 rounded-full max-w-lg mx-auto glass-panel justify-center">
-                        <button id="individual-tab" class="sub-tab-button active flex-1 py-2 px-6 text-center text-sm rounded-full text-primary-green transition-all duration-300 ease-in-out">
+                    <!-- Secondary Tabs (Individual, Neighborhood, Friends) -->
+                    <!-- Removed bg-card-bg/50 as glass-panel already provides the background -->
+                    <div class="flex p-1 mb-6 rounded-full max-w-lg mx-auto glass-panel">
+                        <!-- Individual Tab is Active -->
+                        <button id="individual-tab" class="sub-tab-button active flex-1 py-2 px-6 text-center text-sm rounded-full transition-all duration-300 ease-in-out">
                             Individual
                         </button>
-                        <button id="neighborhood-tab" class="sub-tab-button flex-1 py-2 px-6 text-center text-sm rounded-full text-secondary-gray transition-all duration-300 ease-in-out">
+                        <button id="neighborhood-tab" class="sub-tab-button flex-1 py-2 px-6 text-center text-sm rounded-full hover:text-primary-green transition-all duration-300 ease-in-out">
                             Neighborhood
                         </button>
-                        <button id="friends-tab" class="sub-tab-button flex-1 py-2 px-6 text-center text-sm rounded-full text-secondary-gray transition-all duration-300 ease-in-out">
+                        <button id="friends-tab" class="sub-tab-button flex-1 py-2 px-6 text-center text-sm rounded-full hover:text-primary-green transition-all duration-300 ease-in-out">
                             Friends
                         </button>
                     </div>
 
-                    <p class="text-center text-secondary-gray text-sm leading-relaxed mb-6">
+                    <p class="text-center text-secondary-gray text-base leading-relaxed mb-6">
                         Your energy savings climb the leaderboard. The more you save, the higher you rank. Challenge your neighbors and see who can make the biggest impact!
                     </p>
 
-                    <div class="glass-panel p-4 rounded-xl mb-6 max-w-md mx-auto">
-                        <p class="text-sm text-secondary-gray">Your rank: <span class="text-neutral-white font-bold text-lg"># 02</span></p>
+                    <!-- Your Rank Card -->
+                    <!-- Removed bg-card-bg, letting glass-panel handle background -->
+                    <div class="glass-panel p-4 rounded-xl mb-6 max-w-md mx-auto flex justify-between items-center card-shadow">
+                        <p class="text-base text-secondary-gray">Your current rank:</p>
+                        <span class="text-primary-green font-bold text-3xl">#02</span>
                     </div>
 
+                    <!-- Leaderboard List -->
                     <div class="space-y-4">
-                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg">
+                        
+                        <!-- Rank 1 -->
+                        <!-- Removed bg-card-bg/50, letting glass-panel handle background -->
+                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg card-shadow">
                             <div class="flex items-center space-x-4">
-                                <span class="font-bold text-lg text-primary-green">1</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 14s-6 2-6 7v1h12v-1s-6-5-6-7z"/>
-                                </svg>
+                                <span class="font-bold text-xl text-accent-yellow">1</span> <!-- Yellow for 1st place -->
+                                <i data-lucide="trophy" class="h-8 w-8 text-accent-yellow"></i> <!-- Gold trophy for 1st -->
                                 <span class="text-md text-neutral-white font-medium">Jo Blogs</span>
                             </div>
-                            <span class="text-lg text-neutral-white font-bold glass-panel py-1 px-4 rounded-full">€312</span>
+                            <!-- Removed bg-card-bg/50 -->
+                            <span class="text-lg text-primary-green font-bold glass-panel py-1 px-4 rounded-full">€312</span>
                         </div>
-
-                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg border border-primary-green">
+                        
+                        <!-- Rank 2 (You - Highlighted) -->
+                        <!-- Removed bg-card-bg/70, letting glass-panel handle background -->
+                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg border border-primary-green card-shadow">
                             <div class="flex items-center space-x-4">
-                                <span class="font-bold text-lg text-primary-green">2</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 14s-6 2-6 7v1h12v-1s-6-5-6-7z"/>
-                                </svg>
-                                <span class="text-md text-neutral-white font-medium">Lo Lo (You)</span>
+                                <span class="font-bold text-xl text-primary-green">2</span>
+                                <i data-lucide="award" class="h-8 w-8 text-primary-green"></i> <!-- Award icon for self -->
+                                <span class="text-md text-neutral-white font-medium">Lo Lo <span class="text-secondary-gray">(You)</span></span>
                             </div>
-                            <span class="text-lg text-neutral-white font-bold glass-panel py-1 px-4 rounded-full">€290</span>
+                            <!-- Removed bg-card-bg/50 -->
+                            <span class="text-lg text-primary-green font-bold glass-panel py-1 px-4 rounded-full">€290</span>
                         </div>
 
-                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg">
+                        <!-- Rank 3 -->
+                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg card-shadow">
                             <div class="flex items-center space-x-4">
-                                <span class="font-bold text-lg text-primary-green">3</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 14s-6 2-6 7v1h12v-1s-6-5-6-7z"/>
-                                </svg>
+                                <span class="font-bold text-xl text-primary-green">3</span>
+                                <i data-lucide="user" class="h-8 w-8 text-secondary-gray"></i>
                                 <span class="text-md text-neutral-white font-medium">Jane Blogs</span>
                             </div>
-                            <span class="text-lg text-neutral-white font-bold glass-panel py-1 px-4 rounded-full">€255</span>
+                            <!-- Removed bg-card-bg/50 -->
+                            <span class="text-lg text-primary-green font-bold glass-panel py-1 px-4 rounded-full">€255</span>
                         </div>
 
-                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg">
+                        <!-- Rank 4 -->
+                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg card-shadow">
                             <div class="flex items-center space-x-4">
-                                <span class="font-bold text-lg text-primary-green">4</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 14s-6 2-6 7v1h12v-1s-6-5-6-7z"/>
-                                </svg>
+                                <span class="font-bold text-lg text-secondary-gray">4</span>
+                                <i data-lucide="user" class="h-8 w-8 text-secondary-gray"></i>
                                 <span class="text-md text-neutral-white font-medium">Ro Ro</span>
                             </div>
-                            <span class="text-lg text-neutral-white font-bold glass-panel py-1 px-4 rounded-full">€212</span>
+                            <!-- Removed bg-card-bg/50 -->
+                            <span class="text-lg text-secondary-gray font-bold glass-panel py-1 px-4 rounded-full">€212</span>
                         </div>
 
-                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg">
+                        <!-- Rank 5 -->
+                        <div class="glass-panel leaderboard-item p-4 rounded-xl flex items-center justify-between shadow-lg card-shadow">
                             <div class="flex items-center space-x-4">
-                                <span class="font-bold text-lg text-primary-green">5</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 14s-6 2-6 7v1h12v-1s-6-5-6-7z"/>
-                                </svg>
+                                <span class="font-bold text-lg text-secondary-gray">5</span>
+                                <i data-lucide="user" class="h-8 w-8 text-secondary-gray"></i>
                                 <span class="text-md text-neutral-white font-medium">Mo Mo</span>
                             </div>
-                            <span class="text-lg text-neutral-white font-bold glass-panel py-1 px-4 rounded-full">€198</span>
+                            <!-- Removed bg-card-bg/50 -->
+                            <span class="text-lg text-secondary-gray font-bold glass-panel py-1 px-4 rounded-full">€198</span>
                         </div>
                     </div>
                 </div>
@@ -184,37 +230,48 @@
         </main>
     </div>
 
-    <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg border-t-2 border-neutral-white sm-hidden">
-        <nav class="flex justify-around items-center h-16">
-            <a href="/home.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium focus:outline-none text-secondary-gray hover:text-primary-green active" data-tab="home">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <path d="M9 22V12h6v10"></path>
-                </svg>
+    <!-- Persistent Navigation Bar -->
+    <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg">
+        <nav class="flex justify-around items-center h-16 bg-primary-blue/80 backdrop-blur-md rounded-t-3xl">
+            <a href="home.html" class="nav-item flex flex-col items-center justify-center p-2 text-secondary-gray hover:text-primary-green" data-tab="home">
+                <i data-lucide="home" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Home</span>
             </a>
-            <a href="/devices.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none" data-tab="devices">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M16 11V5.5L12 2 8 5.5V11H6V22h12V11z" />
-                </svg>
+            <a href="devices.html" class="nav-item flex flex-col items-center justify-center p-2 text-secondary-gray hover:text-primary-green" data-tab="devices">
+                 <i data-lucide="router" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Devices</span>
             </a>
-            <a href="/community.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none" data-tab="community">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17 19.22H5.78a2 2 0 0 1-1.74-2.8l2.64-7.55a2 2 0 0 1 1.74-1.65h10.42a2 2 0 0 1 1.74 1.65l2.64 7.55a2 2 0 0 1-1.74 2.8z" />
-                    <circle cx="12" cy="7" r="2" />
-                </svg>
+            <!-- Community Tab: Set as active with white icon/text and green glow -->
+            <a href="community.html" class="nav-item flex flex-col items-center justify-center p-2 active" data-tab="community">
+                <i data-lucide="users" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Community</span>
             </a>
-            <a href="/savings.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none" data-tab="savings">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
+            <a href="savings.html" class="nav-item flex flex-col items-center justify-center p-2 text-secondary-gray hover:text-primary-green" data-tab="savings">
+                <i data-lucide="trending-up" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Savings</span>
             </a>
         </nav>
     </div>
 
-    <script src="js/community_leaderboard.js"></script>
+    <script>
+        // Initialize Lucide icons after they are loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+        
+        // Mock function to simulate tab switching
+        document.querySelectorAll('.sub-tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // First, remove the active state from all buttons
+                document.querySelectorAll('.sub-tab-button').forEach(btn => btn.classList.remove('active'));
+                
+                // Then, add the active state to the clicked button
+                button.classList.add('active');
+            });
+        });
+    </script>
+    <!-- Removed original script tag: <script src="js/community_leaderboard.js"></script> -->
 </body>
 </html>

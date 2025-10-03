@@ -253,3 +253,38 @@ body {
     transition: width 0.3s ease-in-out;
 }
 
+
+
+.energy-usage-cards-container {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+    padding-bottom: 1rem; /* Space for scrollbar */
+    gap: 1rem; /* Space between cards */
+}
+
+.energy-card {
+    flex: 0 0 250px; /* Prevent shrinking, set a fixed width for cards */
+    /* You might want to adjust the width based on your design */
+}
+
+.horizontal-scroll-wrapper {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 1rem; /* Space for scrollbar */
+    white-space: nowrap; /* Force content onto a single line */
+}
+
+.horizontal-scroll-wrapper #category-container {
+    display: flex; /* Ensure flex behavior within the wrapper */
+    flex-wrap: nowrap; /* Prevent wrapping of category buttons */
+    gap: 1rem; /* Re-introduce gap between buttons */
+}
+
+.horizontal-scroll-wrapper .category-button {
+    flex: 0 0 auto; /* Prevent shrinking */
+    width: 150px; /* Fixed width for cards */
+    /* margin-right: 1rem; Removed as gap handles spacing */
+    display: inline-block; /* Ensure cards behave as inline blocks for nowrap */
+}

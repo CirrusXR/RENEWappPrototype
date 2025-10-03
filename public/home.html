@@ -7,18 +7,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Load Lucide Icons for cleaner vectors -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
           theme: {
             extend: {
               colors: {
-                'primary-blue': '#213958',
-                'primary-green': '#5CBE67',
-                'secondary-gray': '#8C8C8C',
-                'accent-red': '#D34E4E',
-                'accent-yellow': '#FBBF24',
-                'neutral-white': '#FFFFFF',
+                // Mapped to a modern dark theme palette
+                'primary-blue': '#0F172A', // Dark Slate Blue (Background)
+                'primary-green': '#34D399', // Vibrant Emerald (Accent)
+                'secondary-gray': '#94A3B8', // Muted Slate (Labels)
+                'accent-red': '#F87171', // Soft Red (Danger/Logout)
+                'accent-yellow': '#FBBF24', // Amber (Live Rate/Savings Accent)
+                'neutral-white': '#F1F5F9', // Off-White (Text)
+                'card-bg': '#1E293B', // Darker Card Background
+                'rebot-blue': '#4F46E5', // Deep Indigo Blue for ReBot Button
               }
             }
           }
@@ -28,42 +33,53 @@
         /* General Body Style */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #213958; /* Primary Blue */
-            color: #FFFFFF; /* Neutral White */
+            background-color: var(--tw-colors-primary-blue);
+            color: var(--tw-colors-neutral-white);
             padding-bottom: 5rem;
+            min-height: 100vh;
         }
 
-        /* Glassmorphism Panel Component */
+        /* Glassmorphism Panel Component (REFINED) */
         .glass-panel {
-            background-color: rgba(255, 255, 255, 0.05); /* slightly more transparent */
+            background-color: rgba(30, 41, 59, 0.6); /* Use card-bg with high opacity */
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1); /* slightly more transparent */
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Deeper shadow */
         }
 
-        /* Card Hover/Shadow Effect */
+        /* Card Hover/Shadow Effect (Refined depth) */
         .card-shadow {
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
         
         .card-shadow:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: var(--tw-colors-primary-green);
         }
 
         /* Nav Item Component */
         .nav-item {
             transition: all 0.2s ease-in-out;
-            color: #8C8C8C; /* Secondary Gray */
+            color: var(--tw-colors-secondary-gray); 
+            /* Add a transition for box-shadow for smooth glow effect */
+            transition: all 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
         
         .nav-item.active {
-            color: #5CBE67; /* Primary Green */
+            /* CHANGED: Set color to neutral-white */
+            color: var(--tw-colors-neutral-white); 
             font-weight: 600;
+
+            /* --- GLOW EFFECT APPLIED HERE (still green) --- */
+            box-shadow: 0 0 15px rgba(52, 211, 153, 0.6), /* primary-green with opacity */
+                        0 0 5px rgba(52, 211, 153, 0.4); 
+            border-radius: 0.5rem; /* Round the edges of the glow area */
+            padding: 0.25rem 0; /* Adjust padding slightly to accommodate the shadow */
+            margin: -0.25rem 0; /* Offset the padding change to maintain overall nav bar size */
         }
 
         .btn-style {
@@ -75,149 +91,477 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* Pulsating animation for the live energy card */
+        /* Pulsating animation (Colors updated to new Tailwind config) */
         @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(92, 190, 103, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(92, 190, 103, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(92, 190, 103, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(52, 211, 153, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
         }
-
         @keyframes pulse-yellow {
-            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(255, 193, 7, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(251, 191, 36, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
         }
-
         @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(211, 78, 78, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(211, 78, 78, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(211, 78, 78, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(248, 113, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0); }
         }
 
         .pulse-green { animation: pulse-green 2s infinite; }
         .pulse-yellow { animation: pulse-yellow 2s infinite; }
         .pulse-red { animation: pulse-red 2s infinite; }
+        
+        /* --- CHAT WIDGET STYLES (FUTURISTIC FLOATING DESIGN) --- */
+        #chat-widget-container {
+            position: fixed;
+            bottom: 4.5rem; /* Above mobile nav */
+            right: 1rem;
+            z-index: 50;
+        }
+        
+        #chat-widget-button {
+            padding: 1rem;
+            border-radius: 9999px;
+            background-color: var(--tw-colors-rebot-blue); 
+            color: var(--tw-colors-neutral-white);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.5);
+            transition: transform 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #chat-widget-button:hover {
+            transform: scale(1.05);
+        }
+        
+        #chat-window {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 75vh;
+            max-height: 500px;
+            max-width: 400px;
+            margin: 0 auto;
+            border-radius: 1.5rem 1.5rem 0 0;
+            
+            /* Enhanced Glassmorphism for ReBot */
+            background-color: rgba(135, 206, 250, 0.85); /* Cool Light Sky Blue with high opacity */
+            backdrop-filter: blur(30px); /* Increased blur */
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Brighter border */
+            
+            /* Floating Glow Effect (Green accent color) */
+            box-shadow: 0 0 25px var(--tw-colors-primary-green), 0 0 40px rgba(0, 0, 0, 0.5);
+            
+            /* Slide-up transition */
+            transform: translateY(100%);
+            transition: transform 0.4s ease-out;
+            
+            /* Desktop/Tablet Positioning */
+            @media (min-width: 1024px) {
+                position: fixed;
+                top: 40%; /* Raise the chat box */
+                right: 2rem;
+                transform: translateY(-50%); /* Adjust for vertical centering */
+                max-height: calc(100vh - 4rem); /* Ensure it doesn't exceed viewport height with padding */
+                height: 500px; /* Preferred height */
+                width: 400px;
+                border-radius: 1.5rem;
+            }
+        }
+        
+        /* Assumes JS adds an 'open' class */
+        #chat-window.open {
+            transform: translateY(0);
+            /* Add a slightly more pronounced glow when open */
+            box-shadow: 0 0 35px var(--tw-colors-primary-green), 0 0 50px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Hide chat window by default, but allow JS to manage visibility */
+        .chat-hidden {
+             display: none !important;
+        }
+
+        /* Basic internal chat styling */
+        #chat-header {
+            background-color: rgba(30, 41, 59, 0.7);
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem 1.5rem 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        
+        #chat-messages {
+            padding: 1rem;
+            overflow-y: auto;
+            height: calc(100% - 10rem); /* Approx calculation */
+        }
+        
+        .chat-message {
+            max-width: 80%;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            border-radius: 0.75rem;
+            color: var(--tw-colors-neutral-white);
+        }
+        .assistant-message {
+            background-color: var(--tw-colors-card-bg);
+            border-radius: 0.75rem 0.75rem 0.75rem 0.25rem;
+            margin-right: auto;
+        }
+        
+        .user-message {
+            background-color: var(--tw-colors-primary-green);
+            color: var(--tw-colors-primary-blue);
+            border-radius: 0.75rem 0.75rem 0.25rem 0.75rem;
+            margin-left: auto;
+        }
+        
+        #chat-input-container {
+            padding: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #chat-input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 9999px;
+            border: none;
+            background-color: var(--tw-colors-card-bg);
+            color: var(--tw-colors-neutral-white);
+            outline: none;
+        }
+        
+        #send-message, #voice-input {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            background-color: var(--tw-colors-primary-green);
+            color: var(--tw-colors-primary-blue);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive utility to hide the mobile nav on larger screens */
+        @media (min-width: 640px) {
+            .sm-hidden {
+                /* This class is now unused on the #mobile-nav element, but kept for context */
+                display: none;
+            }
+        }
     </style>
+    <!-- Keep the link to external CSS and JS, but styles are defined inline for visual demo -->
+    <link rel="stylesheet" href="assistant.css"> 
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen bg-primary-blue">
+    
     <div class="flex-grow flex flex-col items-center py-10 px-4">
-        <main class="mx-auto max-w-4xl w-full">
-            <header class="py-4 mb-8 text-center">
-        <div class="header-content">
-            <h1 class="text-4xl md:text-5xl"><span id="greetingMessage"></span>, <span id="userNameDisplay">User</span>!</h1>
-            <p>Ready to make a difference?</p>
-        </div>
-                <p class="text-sm text-secondary-gray mt-1">Here's a summary of your energy usage.</p>
+        <main class="mx-auto max-w-7xl w-full">
+            <header class="py-4 mb-8 flex justify-between items-center relative">
+                <div class="header-content text-left">
+                    <!-- Adjusted greeting text size: text-2xl on mobile, text-4xl on desktop -->
+                    <h1 class="text-2xl md:text-4xl text-neutral-white font-extrabold">
+                        <span id="dynamicHomeGreeting"></span>, 
+                        <span id="homeUserNameDisplay" class="text-primary-green"></span>!
+                    </h1>
+                    <!-- Adjusted supporting text size: text-sm on mobile, text-base on desktop -->
+                    <p class="text-secondary-gray mt-1 text-sm md:text-base">Ready to make a difference?</p>
+                </div>
+                <!-- Profile, ReBot, & Logout Group (Desktop) -->
+                <div class="flex items-center space-x-2">
+                    <!-- New ReBot Icon Button (Desktop) - Now uses rebot-blue color -->
+                    <button id="rebot-open-btn-desktop" class="hidden lg:hidden text-neutral-white p-3 rounded-full btn-style bg-rebot-blue hover:bg-indigo-500">
+                        <i data-lucide="message-circle" class="h-6 w-6"></i>
+                    </button>
+                    <!-- User Profile Button -->
+                    <button class="text-neutral-white p-3 rounded-full btn-style bg-card-bg hover:bg-primary-blue">
+                        <i data-lucide="user" class="h-6 w-6"></i>
+                    </button>
+                    <!-- Logout Button -->
+                    <button id="logout-btn" class="bg-accent-red text-neutral-white p-3 rounded-full btn-style hover:bg-red-500">
+                        <i data-lucide="log-out" class="h-6 w-6"></i>
+                    </button>
+                </div>
             </header>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- New: Current Bill Cycle Usage Card -->
-                <div class="glass-panel card-shadow p-6 text-center">
-                    <h2 class="text-xl font-semibold text-neutral-white mb-4">Current Bill Cycle Usage</h2>
-                    <div class="flex items-center justify-center mb-4">
-                        <span class="text-sm text-secondary-gray mr-2">kWh</span>
-                        <label for="usageToggle" class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="usageToggle" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-green-300 dark:peer-focus:ring-primary-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-green"></div>
-                        </label>
-                        <span class="text-sm text-secondary-gray ml-2">Cost</span>
-                    </div>
-                    <div class="flex items-baseline justify-center">
-                        <p id="billCycleValue" class="text-5xl font-bold text-primary-green">250</p>
-                        <p id="billCycleUnit" class="ml-2 text-lg text-secondary-gray">kWh</p>
-                    </div>
+            <!-- Adaptive Grid Layout (Hybrid Focus) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Current Bill Cycle Usage Card (Key Metric, 2-span on desktop) -->
+                <div class="glass-panel card-shadow p-6 lg:col-span-2"> <!-- Removed text-center -->
+                    <h2 class="text-xl font-semibold text-neutral-white mb-4 flex justify-between items-center">
+                        Your Current Bill
+                        <!-- kWh / Cost Toggle - MOVED TO RIGHT SIDE -->
+                        <div id="usage-toggle-container" class="flex items-center">
+                            <span id="kwh-label" class="text-sm text-secondary-gray mr-2">kWh</span>
+                            <label for="usageToggle" class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="usageToggle" class="sr-only peer">
+                                <!-- Styled Toggle switch -->
+                                <div id="toggle-switch-div" class="w-11 h-6 bg-secondary-gray/50 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-green/50 peer after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-neutral-white after:border-primary-blue after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-green"></div>
+                            </label>
+                            <span id="cost-label" class="text-sm text-secondary-gray ml-2">Cost</span>
+                        </div>
+                    </h2>
                     
-
-                    <div class="w-full bg-gray-700 rounded-full h-2.5 mt-4">
-                        <div id="billCycleProgressBar" class="bg-primary-green h-2.5 rounded-full" style="width: 50%"></div>
+                    <div class="flex flex-col items-start"> <!-- Changed to items-start -->
+                        <div class="flex items-baseline justify-start"> <!-- Changed to justify-start -->
+                            <p id="billCycleValue" class="text-6xl font-extrabold text-primary-green">250</p>
+                            <p id="billCycleUnit" class="ml-2 text-2xl text-secondary-gray">kWh</p>
+                        </div>
+                        <p class="mt-2 text-secondary-gray text-sm">So far this billing period.</p>
+                        <div class="w-full bg-card-bg rounded-full h-3 mt-4">
+                            <div id="billCycleProgressBar" class="bg-primary-green h-3 rounded-full" style="width: 50%"></div>
+                        </div>
                     </div>
-                    <p class="mt-2 text-secondary-gray">So far this billing period.</p>
                 </div>
 
-                <!-- Energy Usage Card -->
-                <div id="live-energy-card" class="glass-panel card-shadow p-6 text-center">
+                <!-- Live Energy Usage Card (Pulsating Highlight) -->
+                <div id="live-energy-card" class="glass-panel card-shadow p-6 text-center flex flex-col justify-center items-center pulse-green">
                     <div class="flex justify-center mb-4">
-                        <svg id="homeIcon" xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
+                        <i data-lucide="zap" id="homeIcon" class="h-12 w-12 text-accent-yellow"></i>
                     </div>
                     <h2 id="live-energy-title" class="text-xl font-semibold text-neutral-white mb-4">Live Energy Usage</h2>
                     <div class="flex items-baseline justify-center">
-                        <p id="energy-kwh" class="text-5xl font-bold text-primary-green">1.2</p>
-                        <p class="ml-2 text-lg text-secondary-gray">€/kWh</p>
+                        <p id="energy-kwh" class="text-5xl font-extrabold text-accent-yellow">1.4</p>
+                        <p class="ml-2 text-xl text-secondary-gray">€/kWh</p>
                     </div>
-                    <p id="energy-message" class="mt-2 text-secondary-gray"></p>
+                    <p id="energy-message" class="mt-2 text-sm font-semibold text-primary-green">Low usage. Start your washer now!</p>
                 </div>
 
                 <!-- Savings Card -->
-                <a href="savings.html" class="glass-panel card-shadow p-6 block text-center">
-                    <h2 class="text-xl font-semibold text-neutral-white mb-4">Monthly Savings</h2>
-                    <div class="flex items-baseline justify-center">
-                        <p class="text-5xl font-bold text-primary-green">€25.50</p>
+                <a href="savings.html" class="glass-panel card-shadow p-6 block text-left">
+                    <h2 class="text-lg font-semibold text-neutral-white mb-2">Monthly Savings</h2>
+                    <div class="flex items-baseline">
+                        <p class="text-4xl font-extrabold text-accent-yellow">€25.50</p>
                     </div>
-                    <p class="mt-2 text-secondary-gray">You've saved this much this month.</p>
+                    <p class="mt-2 text-sm text-secondary-gray">You've saved this much this month.</p>
                 </a>
 
                 <!-- Carbon Footprint Card -->
-                <a href="carbon_impact.html" class="glass-panel card-shadow p-6 block text-center">
-                    <h2 class="text-xl font-semibold text-neutral-white mb-4">Carbon Footprint</h2>
-                    <div class="flex items-baseline justify-center">
-                        <p class="text-5xl font-bold text-primary-green">15.8</p>
+                <a href="carbon_impact.html" class="glass-panel card-shadow p-6 block text-left">
+                    <h2 class="text-lg font-semibold text-neutral-white mb-2">Carbon Footprint</h2>
+                    <div class="flex items-baseline">
+                        <p class="text-4xl font-extrabold text-primary-green">15.8</p>
                         <p class="ml-2 text-lg text-secondary-gray">kg CO2</p>
                     </div>
-                    <p class="mt-2 text-secondary-gray">Your footprint this week.</p>
+                    <p class="mt-2 text-sm text-secondary-gray">Your footprint this week.</p>
                 </a>
 
-                <!-- Quick Actions -->
-                <div class="md:col-span-2 lg:col-span-3 glass-panel p-6">
+                <!-- Quick Actions (2-span on mobile, 1-span on desktop) -->
+                <div class="glass-panel p-6 md:col-span-2 lg:col-span-1">
                     <h2 class="text-xl font-semibold text-neutral-white mb-4">Quick Actions</h2>
-                    <div class="flex space-x-4">
-                        <a href="devices.html" class="bg-primary-green text-neutral-white font-semibold px-6 py-3 rounded-lg btn-style">Manage Devices</a>
-                        <a href="total_consumption.html" class="bg-white/10 text-neutral-white font-semibold px-6 py-3 rounded-lg btn-style">View Usage Details</a>
+                    <div class="flex flex-col space-y-3 md:flex-row md:space-x-4 md:space-y-0">
+                        <!-- Manage Devices -->
+                        <a href="devices.html" class="flex-1 bg-primary-green text-primary-blue font-semibold px-6 py-3 rounded-xl btn-style text-center hover:bg-emerald-400">
+                            Manage Devices
+                        </a>
+                        <!-- View Usage Details -->
+                        <a href="total_consumption.html" class="flex-1 bg-card-bg text-neutral-white font-semibold px-6 py-3 rounded-xl btn-style text-center hover:bg-slate-700">
+                            View Usage Details
+                        </a>
                     </div>
                 </div>
 
-                <!-- Community Spotlight -->
-                <div class="lg:col-span-3 glass-panel p-6">
-                    <h2 class="text-xl font-semibold text-neutral-white mb-4">Community Spotlight</h2>
-                    <p class="text-secondary-gray">Your neighbor, Jane Doe, just hit a 30% reduction in energy usage! Congratulate them on the community board.</p>
-                    <a href="community.html" class="text-primary-green font-semibold mt-4 inline-block">Go to Community Board →</a>
+                <!-- Community Spotlight (Full width on all screens) -->
+                <div class="glass-panel p-6 lg:col-span-3">
+                    <h2 class="text-xl font-semibold text-neutral-white mb-4 flex items-center">
+                        <i data-lucide="party-popper" class="w-6 h-6 mr-3 text-accent-yellow"></i> Community Spotlight
+                    </h2>
+                    <p class="text-secondary-gray text-base">Your neighbor, Jane Doe, just hit a 30% reduction in energy usage! Congratulate them on the community board.</p>
+                    <a href="community.html" class="text-primary-green font-semibold mt-4 inline-block hover:text-emerald-400 transition flex items-center">
+                        Go to Community Board <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                    </a>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg border-t-2 border-neutral-white sm-hidden">
+    <!-- Mobile Navigation Bar (Fixed Bottom) -->
+    <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 bg-white/5 backdrop-blur-md rounded-t-3xl shadow-lg border-t-2 border-white/10">
         <nav class="flex justify-around items-center h-16">
-            <a href="home.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium active" data-tab="home">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <path d="M9 22V12h6v10"></path>
-                </svg>
+            <a href="home.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium text-neutral-white focus:outline-none active transition-colors" data-tab="home">
+                <i data-lucide="home" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Home</span>
             </a>
-            <a href="devices.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green" data-tab="devices">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M16 11V5.5L12 2 8 5.5V11H6V22h12V11z" />
-                </svg>
+            <a href="devices.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium focus:outline-none text-secondary-gray hover:text-primary-green transition-colors" data-tab="devices">
+                <i data-lucide="plug" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Devices</span>
             </a>
-            <a href="community.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green" data-tab="community">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17 19.22H5.78a2 2 0 0 1-1.74-2.8l2.64-7.55a2 2 0 0 1 1.74-1.65h10.42a2 2 0 0 1 1.74 1.65l2.64 7.55a2 2 0 0 1-1.74 2.8z" />
-                    <circle cx="12" cy="7" r="2" />
-                </svg>
+            <a href="community.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none transition-colors" data-tab="community">
+                <i data-lucide="users" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Community</span>
             </a>
-            <a href="savings.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green" data-tab="savings">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
+            <a href="savings.html" class="flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none transition-colors" data-tab="savings">
+                <i data-lucide="trending-up" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Savings</span>
             </a>
         </nav>
     </div>
 
-    <script src="js/home.js" type="module"></script>
+    <script src="js/home.js?v=1727632800000" type="module"></script>
+
+    <!-- AI Assistant Widget -->
+    <div id="chat-widget-container">
+        <!-- Mobile floating button - Updated with deep blue background and white icon -->
+        <button id="chat-widget-button" class="lg:hidden">
+             <i data-lucide="message-circle" class="h-6 w-6"></i>
+        </button>
+        <div id="chat-window" class="chat-hidden">
+            <div id="chat-header">
+                <span>RENEWBot Assistant</span>
+                <span id="close-chat">&times;</span>
+            </div>
+            <div id="chat-messages">
+                <div class="chat-message assistant-message">
+                    <span id="dynamicAssistantGreeting"></span>
+                </div>
+                <!-- Mock user message to show styling -->
+                <!-- <div class="chat-message user-message">
+                    What's the best time to run my washing machine?
+                </div> -->
+            </div>
+            <div id="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Ask a question...">
+                <button id="send-message">
+                    <i data-lucide="send" class="h-4 w-4"></i>
+                </button>
+                <button id="voice-input">
+                    <i data-lucide="mic" class="h-4 w-4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="assistant.js"></script>
+    <script>
+        // Initialize Lucide icons after they are loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+
+        // --- MOCK JS FOR TOGGLE FUNCTIONALITY (UPDATED TO MATCH STYLING REQUEST) ---
+        const usageToggle = document.getElementById('usageToggle');
+        const billCycleValue = document.getElementById('billCycleValue');
+        const billCycleUnit = document.getElementById('billCycleUnit');
+        const billCycleProgressBar = document.getElementById('billCycleProgressBar');
+        const toggleSwitchDiv = document.getElementById('toggle-switch-div');
+
+        // Define data states for clear toggling
+        const kwhState = {
+            value: '250',
+            unit: 'kWh',
+            colorClass: 'text-primary-green',
+            progressWidth: '50%',
+            progressColor: 'bg-primary-green',
+            toggleBg: 'bg-primary-green' // peer-checked state
+        };
+        const costState = {
+            value: '45.12',
+            unit: '€',
+            colorClass: 'text-accent-yellow',
+            progressWidth: '75%', // Mock different progress state
+            progressColor: 'bg-accent-yellow',
+            toggleBg: 'bg-accent-yellow' // peer-checked state
+        };
+        
+        // Function to update the card's visual state
+        const updateBillCard = (isChecked) => {
+            const state = isChecked ? costState : kwhState;
+            const uncheckedBg = 'bg-secondary-gray/50';
+
+            // 1. Update Metric Values and Colors
+            billCycleValue.textContent = state.value;
+            billCycleUnit.textContent = state.unit;
+
+            // Remove previous colors and apply new metric color
+            billCycleValue.classList.remove(kwhState.colorClass, costState.colorClass);
+            billCycleValue.classList.add(state.colorClass);
+
+            // 2. Update Progress Bar Style (Mock for visual change)
+            billCycleProgressBar.style.width = state.progressWidth;
+            billCycleProgressBar.classList.remove(kwhState.progressColor, costState.progressColor);
+            billCycleProgressBar.classList.add(state.progressColor);
+
+            // 3. Update Toggle Switch Color (The main logic for the request)
+            // The Tailwind check:peer-checked class is handled by dynamic inline style insertion
+            if (isChecked) {
+                 // Checkbox is checked (Cost view) -> use Yellow background for the switch base
+                 toggleSwitchDiv.classList.remove('peer-checked:bg-primary-green');
+                 toggleSwitchDiv.classList.add('peer-checked:bg-accent-yellow');
+                 toggleSwitchDiv.classList.remove(uncheckedBg); // Ensure initial unchecked background is right for when Cost becomes default
+            } else {
+                 // Checkbox is unchecked (kWh view) -> use Green background for the switch base
+                 toggleSwitchDiv.classList.remove('peer-checked:bg-accent-yellow');
+                 toggleSwitchDiv.classList.add('peer-checked:bg-primary-green');
+                 toggleSwitchDiv.classList.remove(uncheckedBg); // Ensure initial unchecked background is right for when kWh becomes default
+            }
+
+            // A more direct way to manage the toggle background color dynamically (since we can't use dynamic Tailwind in CSS string without JIT)
+            // To ensure the checked state is colored correctly based on the current view:
+            const checkedClass = isChecked ? 'bg-accent-yellow' : 'bg-primary-green';
+            const uncheckedClass = !isChecked ? 'bg-secondary-gray/50' : 'bg-secondary-gray/50';
+            
+            // Reapply the necessary Tailwind classes to the div to reflect the color change
+            if (usageToggle.checked) {
+                // If currently checked, apply the checked color (yellow for cost, green for kwh)
+                toggleSwitchDiv.classList.remove('bg-secondary-gray/50');
+                toggleSwitchDiv.classList.add(checkedClass);
+            } else {
+                // If currently unchecked, apply the unchecked color (gray)
+                toggleSwitchDiv.classList.remove('bg-primary-green', 'bg-accent-yellow');
+                toggleSwitchDiv.classList.add(uncheckedClass);
+            }
+        };
+
+
+        // Initial setup and event listener
+        // Set initial state (kWh is default, unchecked)
+        usageToggle.checked = false; 
+        updateBillCard(usageToggle.checked);
+
+        usageToggle.addEventListener('change', (e) => {
+            updateBillCard(e.target.checked);
+        });
+        
+        // --- Mock JS for Chat Window Visibility (To demonstrate slide-up effect) ---
+        const chatWindow = document.getElementById('chat-window');
+        const openButtons = [
+            document.getElementById('chat-widget-button'),
+            document.getElementById('rebot-open-btn-desktop')
+        ].filter(Boolean);
+        const closeButton = document.getElementById('close-chat');
+
+        const openChat = () => {
+            chatWindow.classList.remove('chat-hidden'); // Remove the hard display: none
+            // Timeout ensures the browser registers the class removal before applying the transition
+            setTimeout(() => {
+                chatWindow.classList.add('open');
+            }, 10); 
+        };
+
+        const closeChat = () => {
+            chatWindow.classList.remove('open');
+            setTimeout(() => {
+                chatWindow.classList.add('chat-hidden'); // Use chat-hidden to guarantee visibility off
+            }, 400); // Match transition duration
+        };
+
+        openButtons.forEach(btn => btn.addEventListener('click', openChat));
+        closeButton.addEventListener('click', closeChat);
+        
+        // Initial state
+        chatWindow.classList.add('chat-hidden');
+    </script>
 </body>
 </html>

@@ -7,94 +7,84 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Load Lucide Icons for cleaner vectors -->
+    <script src="https://unpkg.com/lucide@latest"></script> 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <style>
-        
-        :root {
-            --color-renew-blue: #213958;
-            --color-renew-green: #5CBE67; 
-            --color-renew-gray: #8C8C8C; 
-            --color-renew-red: #D3464E; 
-            --color-renew-yellow: #FFC107; 
-            --color-neutral-white: #FFFFFF;
-            --color-light-gray: #f9fafb;
-            --color-text-light: #6b7280;
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                // Mapped to the modern dark theme palette (Consistent across all screens)
+                'primary-blue': '#0F172A', // Dark Slate Blue (Background)
+                'primary-green': '#34D399', // Vibrant Emerald (Accent)
+                'secondary-gray': '#94A3B8', // Muted Slate (Labels)
+                'accent-red': '#F87171', // Soft Red (Danger/Logout)
+                'accent-yellow': '#FBBF24', // Amber (Live Rate/Savings Accent)
+                'neutral-white': '#F1F5F9', // Off-White (Text)
+                'card-bg': '#1E293B', // Darker Card Background
+                'rebot-blue': '#4F46E5', // Deep Indigo Blue for ReBot Button
+              }
+            }
+          }
         }
-
-        /* Utility classes based on the design system colors */
-        .text-renew-blue { color: var(--color-renew-blue); }
-        .bg-renew-green { background-color: var(--color-renew-green); }
-        .text-renew-gray { color: var(--color-renew-gray); }
-        .text-renew-red { color: var(--color-renew-red); }
-        .bg-renew-red { background-color: var(--color-renew-red); }
-        .bg-renew-yellow { background-color: var(--color-renew-yellow); }
-        .bg-light-gray { background-color: var(--color-light-gray); }
-        .text-renew-yellow { color: var(--color-renew-yellow); }
-        .text-neutral-white { color: var(--color-neutral-white); }
+    </script>
+    <style>
+        /* Reset margins/padding */
+        html, body {
+            margin: 0;
+            padding: 0; 
+            /* Ensure the absolute lowest layer is the primary color */
+            background-color: var(--tw-colors-primary-blue) !important;
+        }
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--color-renew-blue), #3b5072);
-            color: var(--color-neutral-white);
+            background-color: var(--tw-colors-primary-blue);
+            color: var(--tw-colors-neutral-white);
+            padding-bottom: 5rem;
         }
         
-        /* Glassmorphism card component */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 1rem;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .glass-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        /* Glassmorphism Panel Component (Standardized to RENEW theme) */
+        .glass-panel, .glass-card {
+            background-color: rgba(30, 41, 59, 0.6); /* Use card-bg with high opacity */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Deeper shadow */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s;
         }
 
-        /* Nav Item Component */
-        .ds-nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--color-text-light);
-            transition: color 0.2s ease-in-out;
+        .glass-panel:hover, .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); 
+            border-color: var(--tw-colors-primary-green);
         }
-        .ds-nav-item.active {
-            color: var(--color-neutral-white);
-            font-weight: 600;
+
+        /* --- Navigation Bar Styling (Consistent) --- */
+        .nav-item {
+            transition: all 0.2s ease-in-out;
+            color: var(--tw-colors-secondary-gray); 
+            transition: all 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
         
-        /* General layout improvements */
-        .ds-time-toggle {
-            display: flex;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
-            border-radius: 9999px;
-            padding: 0.25rem;
-            justify-content: space-between;
-        }
-        .ds-time-button {
-            flex: 1;
-            padding: 0.5rem;
-            text-align: center;
+        .nav-item.active {
+            color: var(--tw-colors-neutral-white); /* Active text/icon color set to white */
             font-weight: 600;
-            color: var(--color-renew-gray);
-            border-radius: 9999px;
-            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .ds-time-button.active {
-            background-color: var(--color-renew-green);
-            color: var(--color-neutral-white);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+            /* Green Glow Effect */
+            box-shadow: 0 0 15px rgba(52, 211, 153, 0.6), /* primary-green with opacity */
+                        0 0 5px rgba(52, 211, 153, 0.4); 
+            border-radius: 0.5rem;
+            padding: 0.25rem 0; 
+            margin: -0.25rem 0; 
         }
 
         /* Styling for the comparison bars */
         .comparison-bar-bg {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1); /* Lighter background for the track */
             height: 1rem;
             border-radius: 9999px;
             overflow: hidden;
@@ -106,11 +96,11 @@
         
         /* Custom toggle switch based on the design system */
         .ds-toggle-track {
-            background-color: var(--color-renew-gray);
+            background-color: var(--tw-colors-secondary-gray); /* Muted gray for inactive track */
             transition: background-color 0.2s ease-in-out;
         }
         .ds-toggle-track:checked {
-            background-color: var(--color-renew-green);
+            background-color: var(--tw-colors-primary-green); /* Vibrant green for active track */
         }
         
         /* Chart Canvas Styling */
@@ -124,12 +114,14 @@
             justify-content: space-between;
             align-items: center;
             padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            /* Use a lighter, more subtle divider */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
         }
 
         .cta-button {
-            background-color: var(--color-renew-blue);
-            color: var(--color-neutral-white);
+            /* Using the primary green for a strong CTA */
+            background-color: var(--tw-colors-primary-green); 
+            color: var(--tw-colors-primary-blue); /* Dark text on green background */
             font-weight: 600;
             padding: 0.75rem 1.5rem;
             border-radius: 1rem;
@@ -141,19 +133,7 @@
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
         }
 
-        /* New styles for horizontal scrolling and enlarged cards */
-        .horizontal-scroll {
-            overflow-x: auto;
-            overflow-y: hidden;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 1rem; /* Adds space for the scrollbar */
-        }
-
-        .horizontal-scroll::-webkit-scrollbar {
-            display: none;
-        }
-        
+        /* --- ENHANCED CATEGORY BUTTONS --- */
         .category-button {
             flex-shrink: 0;
             min-width: 150px;
@@ -162,70 +142,90 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            space-y-2;
             padding: 1rem;
-            border-radius: 0.75rem;
+            border-radius: 1.5rem; /* Larger border-radius */
             cursor: pointer;
             transition: all 0.3s ease-in-out;
-            background-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-        }
-        .category-button:hover {
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .category-button.active {
-            background-color: var(--color-renew-green);
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            
+            /* Style to match glass panels for inactive state */
+            background-color: rgba(30, 41, 59, 0.6); /* Use card-bg with high opacity */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Deeper shadow from glass-panel */
         }
         
-        #category-container {
-            display: flex;
-            gap: 1rem;
-            width: fit-content;
+        /* INDIVIDUAL HOVER EFFECT: Subtle lift and soft glow */
+        .category-button:hover {
+            transform: translateY(-4px); 
+            box-shadow: 0 0 15px 5px rgba(52, 211, 153, 0.3), /* Soft Green Glow */
+                        0 8px 15px rgba(0, 0, 0, 0.4); 
+            border-color: #34D399; /* primary-green */
+        }
+        
+        .category-button:hover .category-icon {
+            color: #34D399 !important; /* primary-green */
+        }
+        .category-button:hover span {
+             color: #F1F5F9 !important; /* neutral-white */
         }
 
-        /* Responsive grid layout */
-        @media (min-width: 640px) {
-            #category-container {
-                display: flex;
-                flex-wrap: nowrap;
-            }
+        /* ACTIVE (Selected) STATE */
+        .category-button.active {
+            background-color: #34D399; /* primary-green */
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #34D399;
+            font-weight: 700;
         }
+        
+        /* Text/Icon Coloring for Active state */
+        .category-button.active .category-icon,
+        .category-button.active span {
+            color: #F1F5F9 !important; /* neutral-white */
+        }
+        
+        /* DEFAULT STATE: Text/Icon Coloring for inactive cards */
+        .category-button:not(.active):not(:hover) span {
+            color: #F1F5F9; /* neutral-white */
+        }
+        /* Category-specific icon colors */
+        .category-button[data-category="heating"]:not(.active):not(:hover) .category-icon { color: #F87171; } /* accent-red */
+        .category-button[data-category="cooling"]:not(.active):not(:hover) .category-icon { color: #4F46E5; } /* rebot-blue */
+        .category-button[data-category="lighting"]:not(.active):not(:hover) .category-icon { color: #FBBF24; } /* accent-yellow */
+        .category-button[data-category="entertainment"]:not(.active):not(:hover) .category-icon { color: #34D399; } /* primary-green */
+        .category-button[data-category="appliances"]:not(.active):not(:hover) .category-icon { color: #94A3B8; } /* secondary-gray */
+
+
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
-    <main class="flex-grow mx-auto max-w-4xl w-full p-4 md:p-8">
+    <div class="flex-grow bg-primary-blue p-4 md:p-8">
+        <main class="mx-auto max-w-4xl w-full">
 
         <header class="flex flex-col items-center relative py-4 mb-4">
             <a href="#" onclick="history.back(); return false;" class="absolute left-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-renew-gray" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                </svg>
+                <i data-lucide="chevron-left" class="h-6 w-6 text-secondary-gray"></i>
             </a>
             <h1 class="text-3xl font-bold text-neutral-white">Total Consumption</h1>
         </header>
         
-        <div class="glass-card p-4 md:p-6 mb-6">
-            <div class="ds-time-toggle mb-4" id="time-toggle-group">
-                <button class="ds-time-button active" data-timeframe="daily">Day</button>
-                <button class="ds-time-button" data-timeframe="weekly">Week</button>
-                <button class="ds-time-button" data-timeframe="monthly">Month</button>
+        <!-- Usage Time Toggle and Summary Card -->
+        <div class="glass-panel p-4 md:p-6 mb-6">
+            <div class="flex bg-white/10 rounded-full p-1 mb-4" id="time-toggle-group">
+                <button class="flex-1 py-2 px-6 text-center text-sm font-semibold rounded-full text-neutral-white transition-all duration-300 ease-in-out bg-primary-green shadow-md" data-timeframe="daily">Day</button>
+                <button class="flex-1 py-2 px-6 text-center text-sm font-medium rounded-full text-secondary-gray transition-all duration-300 ease-in-out" data-timeframe="weekly">Week</button>
+                <button class="flex-1 py-2 px-6 text-center text-sm font-medium rounded-full text-secondary-gray transition-all duration-300 ease-in-out" data-timeframe="monthly">Month</button>
             </div>
 
             <div class="flex flex-col items-center justify-center text-center mt-6 mb-6">
                 <div class="flex items-center space-x-4 mb-4">
                     <button id="prev-date-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-renew-gray" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
+                        <i data-lucide="chevron-left" class="h-6 w-6 text-secondary-gray"></i>
                     </button>
                     <span class="text-neutral-white font-bold text-lg" id="date-label"></span>
                     <button id="next-date-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-renew-gray" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
+                        <i data-lucide="chevron-right" class="h-6 w-6 text-secondary-gray"></i>
                     </button>
                 </div>
                 
@@ -233,13 +233,14 @@
                     <span id="kwh-label" class="text-neutral-white font-bold">kWh</span>
                     <label for="toggle-switch" class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" value="" id="toggle-switch" class="sr-only peer" checked>
-                        <div class="w-11 h-6 ds-toggle-track rounded-full peer peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-renew-green/20 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-renew-green"></div>
+                        <!-- Updated toggle colors to RENEW theme -->
+                        <div class="w-11 h-6 ds-toggle-track rounded-full peer peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-green/20 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-neutral-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-neutral-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-green"></div>
                     </label>
-                    <span id="cost-label" class="text-renew-gray font-bold">€</span>
+                    <span id="cost-label" class="text-secondary-gray font-bold">€</span>
                 </div>
 
                 <div class="mt-8">
-                    <p class="text-renew-gray font-medium text-sm" id="total-label">Total Daily Consumption</p>
+                    <p class="text-secondary-gray font-medium text-sm" id="total-label">Total Daily Consumption</p>
                     <p class="text-neutral-white font-bold text-3xl mt-1" id="total-value"></p>
                 </div>
             </div>
@@ -247,51 +248,54 @@
 
         <section class="mb-6">
             <h2 class="text-xl font-bold text-neutral-white mb-4">Usage Over Time</h2>
-            <div class="glass-card p-4">
+            <div class="glass-panel p-4">
                 <canvas id="usage-chart"></canvas>
             </div>
         </section>
         
         <section class="mb-6">
             <h2 class="text-xl font-bold text-neutral-white mb-4">Compare your usage</h2>
-            <div class="glass-card p-4">
+            <div class="glass-panel p-4">
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-1">
-                        <span id="prev-period-label" class="text-renew-gray font-medium text-sm"></span>
-                        <span id="prev-period-value" class="text-renew-gray font-bold text-sm"></span>
+                        <span id="prev-period-label" class="text-secondary-gray font-medium text-sm"></span>
+                        <span id="prev-period-value" class="text-secondary-gray font-bold text-sm"></span>
                     </div>
                     <div class="comparison-bar-bg">
-                        <div id="prev-bar" class="comparison-bar bg-renew-green"></div>
+                        <!-- Updated bar color class -->
+                        <div id="prev-bar" class="comparison-bar bg-primary-green"></div>
                     </div>
                 </div>
 
                 <div>
                     <div class="flex justify-between items-center mb-1">
-                        <span id="current-period-label" class="text-renew-gray font-medium text-sm"></span>
-                        <span id="current-period-value" class="text-renew-yellow font-bold text-sm"></span>
+                        <span id="current-period-label" class="text-secondary-gray font-medium text-sm"></span>
+                        <!-- Updated text color class -->
+                        <span id="current-period-value" class="text-accent-yellow font-bold text-sm"></span>
                     </div>
                     <div class="comparison-bar-bg">
-                        <div id="current-bar" class="comparison-bar bg-renew-yellow"></div>
+                        <!-- Updated bar color class -->
+                        <div id="current-bar" class="comparison-bar bg-accent-yellow"></div>
                     </div>
                 </div>
             </div>
-            <p class="text-sm text-center text-renew-gray mt-4" id="comparison-text"></p>
+            <p class="text-sm text-center text-secondary-gray mt-4" id="comparison-text"></p>
         </section>
 
         <section class="mb-6">
             <h2 class="text-xl font-bold text-neutral-white mb-4">Cost Breakdown</h2>
-            <div class="glass-card p-4">
+            <div class="glass-panel p-4">
                 <div class="space-y-4">
                     <div class="grid-item">
-                        <p class="text-renew-gray font-medium text-sm">Total Cost for Period</p>
+                        <p class="text-secondary-gray font-medium text-sm">Total Cost for Period</p>
                         <p id="total-cost" class="font-bold text-neutral-white"></p>
                     </div>
                     <div class="grid-item">
-                        <p class="text-renew-gray font-medium text-sm">Average Cost per kWh</p>
+                        <p class="text-secondary-gray font-medium text-sm">Average Cost per kWh</p>
                         <p id="cost-per-kwh" class="font-bold text-neutral-white"></p>
                     </div>
                     <div class="grid-item border-b-0">
-                        <p class="text-renew-gray font-medium text-sm">Projected Monthly Cost</p>
+                        <p class="text-secondary-gray font-medium text-sm">Projected Monthly Cost</p>
                         <p id="projected-cost" class="font-bold text-neutral-white"></p>
                     </div>
                 </div>
@@ -300,26 +304,36 @@
 
         <section class="mb-6">
             <h2 class="text-xl font-bold text-neutral-white mb-4">Where Your Energy Goes</h2>
-            <div class="horizontal-scroll">
-                <div id="category-container" class="flex gap-4">
+            <div class="horizontal-scroll-wrapper">
+                <div id="category-container">
+                    
+                    <!-- Heating Card (Active) -->
                     <div class="category-button active" data-category="heating">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-renew-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 0 1-9-9c0-6.1 7.5-10.4 9-15 1.5 4.6 9 8.9 9 15a9 9 0 0 1-9 9z"/><path d="M12 21v-8"/></svg>
+                        <i data-lucide="flame" class="category-icon w-8 h-8 mb-2"></i>
                         <span class="text-sm font-semibold">Heating</span>
                     </div>
+                    
+                    <!-- Cooling Card -->
                     <div class="category-button" data-category="cooling">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-renew-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8a7 7 0 0 1 14 0z"/><path d="M17 11v8a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-8a7 7 0 0 1 14 0z"/><path d="M12 22v-4"/><path d="M7 22v-4"/><path d="M17 22v-4"/></svg>
+                        <i data-lucide="snowflake" class="category-icon w-8 h-8 mb-2"></i>
                         <span class="text-sm font-semibold">Cooling</span>
                     </div>
+                    
+                    <!-- Lighting Card -->
                     <div class="category-button" data-category="lighting">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-renew-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18a3 3 0 0 1 6 0"/><path d="M10 22h4"/><path d="M12 12a4 4 0 0 0 0 8"/><path d="M12 12V3"/><path d="M10 12l2-3 2 3"/><path d="M16 12h5"/><path d="M19 15l2-3-2-3"/><path d="M8 12H3"/><path d="M5 15l-2-3 2-3"/><path d="M12 18v4"/><path d="M12 12l-2 3 2 3"/></svg>
+                        <i data-lucide="zap" class="category-icon w-8 h-8 mb-2"></i>
                         <span class="text-sm font-semibold">Lighting</span>
                     </div>
+                    
+                    <!-- Entertainment Card -->
                     <div class="category-button" data-category="entertainment">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-renew-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13.5a1.5 1.5 0 0 0-1.5 1.5c0 .8.7 1.5 1.5 1.5s1.5-.7 1.5-1.5a1.5 1.5 0 0 0-1.5-1.5z"/><path d="M3 13.5a1.5 1.5 0 0 0-1.5 1.5c0 .8.7 1.5 1.5 1.5s1.5-.7 1.5-1.5a1.5 1.5 0 0 0-1.5-1.5z"/><path d="M12 13.5a1.5 1.5 0 0 0-1.5 1.5c0 .8.7 1.5 1.5 1.5s1.5-.7 1.5-1.5a1.5 1.5 0 0 0-1.5-1.5z"/><path d="M21 15v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1"/><path d="M12 15V8a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v7"/><path d="M12 15V8a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v7"/></svg>
+                        <i data-lucide="gamepad-2" class="category-icon w-8 h-8 mb-2"></i>
                         <span class="text-sm font-semibold">Entertainment</span>
                     </div>
+                    
+                    <!-- Appliances Card -->
                     <div class="category-button" data-category="appliances">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-renew-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><path d="M18 14h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2z"/><path d="M10 2h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><path d="M10 14h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2z"/></svg>
+                        <i data-lucide="microwave" class="category-icon w-8 h-8 mb-2"></i>
                         <span class="text-sm font-semibold">Appliances</span>
                     </div>
                 </div>
@@ -328,45 +342,334 @@
 
         <section class="mb-6">
             <h2 class="text-xl font-bold text-neutral-white mb-4">Top Energy Users</h2>
-            <div class="glass-card p-4">
+            <div class="glass-panel p-4">
                 <div id="top-users-list" class="space-y-4">
+                    <!-- Mock data styled with new colors -->
+                    <div class="flex justify-between items-center bg-card-bg p-3 rounded-xl">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="thermometer" class="h-6 w-6 text-accent-red"></i>
+                            <span class="text-neutral-white font-medium">Immersion Heater</span>
+                        </div>
+                        <span class="text-accent-red font-bold">15 kWh</span>
                     </div>
+                    <div class="flex justify-between items-center bg-card-bg p-3 rounded-xl">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="gamepad-2" class="h-6 w-6 text-accent-yellow"></i>
+                            <span class="text-neutral-white font-medium">Game Console</span>
+                        </div>
+                        <span class="text-accent-yellow font-bold">8 kWh</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-card-bg p-3 rounded-xl">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="tv-2" class="h-6 w-6 text-primary-green"></i>
+                            <span class="text-neutral-white font-medium">Living Room TV</span>
+                        </div>
+                        <span class="text-primary-green font-bold">5 kWh</span>
+                    </div>
+                </div>
             </div>
         </section>
         
     </main>
 
-     <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg border-t-2 border-gray-100 sm-hidden">
-        <nav class="flex justify-around items-center h-16">
-            <a href="/home.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium focus:outline-none text-[#94A3B8] hover:text-[#22C55E] active" data-tab="home">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <path d="M9 22V12h6v10"></path>
-                </svg>
+    <div id="mobile-nav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel rounded-t-3xl shadow-lg">
+        <nav class="flex justify-around items-center h-16 bg-primary-blue/80 backdrop-blur-md rounded-t-3xl">
+            <a href="home.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium focus:outline-none text-secondary-gray hover:text-primary-green transition-colors" data-tab="home">
+                <i data-lucide="home" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Home</span>
             </a>
-            <a href="/devices.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-[#94A3B8] hover:text-[#22C55E] focus:outline-none" data-tab="devices">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M16 11V5.5L12 2 8 5.5V11H6V22h12V11z" />
-                </svg>
+            <a href="devices.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none transition-colors" data-tab="devices">
+                <i data-lucide="plug" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Devices</span>
             </a>
-            <a href="/community.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-[#94A3B8] hover:text-[#22C55E] focus:outline-none" data-tab="community">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17 19.22H5.78a2 2 0 0 1-1.74-2.8l2.64-7.55a2 2 0 0 1 1.74-1.65h10.42a2 2 0 0 1 1.74 1.65l2.64 7.55a2 2 0 0 1-1.74 2.8z" />
-                    <circle cx="12" cy="7" r="2" />
-                </svg>
+            <a href="community.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none transition-colors" data-tab="community">
+                <i data-lucide="users" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Community</span>
             </a>
-            <a href="/savings.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-[#94A3B8] hover:text-[#22C55E] focus:outline-none" data-tab="savings">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
+            <a href="savings.html" class="nav-item flex flex-col items-center justify-center p-2 text-sm font-medium text-secondary-gray hover:text-primary-green focus:outline-none transition-colors" data-tab="savings">
+                <i data-lucide="trending-up" class="h-6 w-6"></i>
                 <span class="mt-1 text-xs">Savings</span>
             </a>
         </nav>
     </div>
 
     <script src="js/total_consumption.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mock data setup for the chart and labels
+            const totalValueEl = document.getElementById('total-value');
+            const dateLabelEl = document.getElementById('date-label');
+            const toggleSwitch = document.getElementById('toggle-switch');
+            const totalLabel = document.getElementById('total-label');
+            const currentBar = document.getElementById('current-bar');
+            const prevBar = document.getElementById('prev-bar');
+            const currentPeriodValue = document.getElementById('current-period-value');
+            const prevPeriodValue = document.getElementById('prev-period-value');
+            const currentPeriodLabel = document.getElementById('current-period-label');
+            const prevPeriodLabel = document.getElementById('prev-period-label');
+            const comparisonText = document.getElementById('comparison-text');
+            const totalCost = document.getElementById('total-cost');
+            const costPerKwh = document.getElementById('cost-per-kwh');
+            const projectedCost = document.getElementById('projected-cost');
+            const prevDateBtn = document.getElementById('prev-date-btn');
+            const nextDateBtn = document.getElementById('next-date-btn');
+            
+            let chartInstance = null;
+            let currentView = 'daily'; // daily, weekly, monthly
+            let isCostView = false;
+            let currentDate = new Date();
+
+            const CHART_COLOR = '#34D399'; // primary-green
+
+            function formatDate(date, timeframe) {
+                const options = { month: 'long', day: 'numeric' };
+                if (timeframe === 'monthly') {
+                    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                }
+                if (timeframe === 'weekly') {
+                    const startOfWeek = new Date(date);
+                    startOfWeek.setDate(date.getDate() - date.getDay());
+                    const endOfWeek = new Date(startOfWeek);
+                    endOfWeek.setDate(startOfWeek.getDate() + 6);
+                    return `${startOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+                }
+                // Daily
+                return date.toLocaleDateString('en-US', options);
+            }
+
+            function generateMockData(date, timeframe) {
+                const baseKwh = {
+                    daily: 15,
+                    weekly: 105,
+                    monthly: 450
+                };
+                const randomFactor = (Math.random() - 0.5) * 0.4; // +/- 20%
+                const kwh = baseKwh[timeframe] * (1 + randomFactor);
+                const cost = kwh * 0.28; // Assume 0.28 per kWh
+
+                const prevRandomFactor = (Math.random() - 0.5) * 0.4;
+                const prevKwh = baseKwh[timeframe] * (1 + prevRandomFactor);
+                const prevCost = prevKwh * 0.28;
+
+                const percentageChange = prevKwh > 0 ? ((kwh - prevKwh) / prevKwh) * 100 : 0;
+                let comparison = `Your usage is about the same as the previous period.`;
+                if (percentageChange > 5) {
+                    comparison = `Your usage is up by ${percentageChange.toFixed(1)}%.`;
+                } else if (percentageChange < -5) {
+                    comparison = `Great job! Your usage is down by ${Math.abs(percentageChange.toFixed(1))}%.`;
+                }
+
+                return {
+                    kwh: kwh,
+                    cost: cost,
+                    prev_kwh: prevKwh,
+                    prev_cost: prevCost,
+                    period: formatDate(date, timeframe),
+                    prev_period: `Previous ${timeframe}`,
+                    comparison: comparison
+                };
+            }
+
+            function generateChartData(timeframe) {
+                let labels, dataPoints;
+                const baseValue = 1 + Math.random();
+                switch (timeframe) {
+                    case 'daily':
+                        labels = ['12am', '3am', '6am', '9am', '12pm', '3pm', '6pm', '9pm'];
+                        dataPoints = labels.map(() => baseValue * (0.5 + Math.random() * 1.5));
+                        break;
+                    case 'weekly':
+                        labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                        dataPoints = labels.map(() => baseValue * 7 * (0.8 + Math.random() * 0.4));
+                        break;
+                    case 'monthly':
+                        labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                        dataPoints = labels.map(() => baseValue * 30 * (0.9 + Math.random() * 0.2));
+                        break;
+                }
+                const costData = dataPoints.map(kwh => kwh * 0.28);
+                return { labels, kwh: dataPoints, cost: costData };
+            }
+            
+            function createChart() {
+                const ctx = document.getElementById('usage-chart').getContext('2d');
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Consumption (kWh)',
+                            data: [],
+                            borderColor: CHART_COLOR,
+                            backgroundColor: 'rgba(52, 211, 153, 0.2)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: CHART_COLOR
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += isCostView ? '€' + context.parsed.y.toFixed(2) : context.parsed.y.toFixed(1) + ' kWh';
+                                        }
+                                        return label;
+                                    }
+                                },
+                                backgroundColor: 'rgba(30, 41, 59, 0.8)', // card-bg
+                                titleColor: '#F1F5F9', // neutral-white
+                                bodyColor: '#94A3B8', // secondary-gray
+                                borderColor: 'rgba(255, 255, 255, 0.1)',
+                                borderWidth: 1,
+                                padding: 10
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: '#94A3B8' // secondary-gray
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#94A3B8', // secondary-gray
+                                    callback: function(value) {
+                                        return isCostView ? '€' + value : value + ' kWh';
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateData() {
+                const data = generateMockData(currentDate, currentView);
+                const chartData = generateChartData(currentView);
+                
+                // Update header/summary
+                dateLabelEl.textContent = data.period;
+                totalLabel.textContent = `Total ${currentView.charAt(0).toUpperCase() + currentView.slice(1)} ${isCostView ? 'Cost' : 'Consumption'}`;
+                
+                const currentValue = isCostView ? data.cost : data.kwh;
+                totalValueEl.textContent = isCostView ? `€${currentValue.toFixed(2)}` : `${currentValue.toFixed(1)} kWh`;
+                
+                // Update comparison section
+                const prevValue = isCostView ? data.prev_cost : data.prev_kwh;
+                const comparisonMax = Math.max(currentValue, prevValue) * 1.1; // 10% buffer
+                
+                prevPeriodLabel.textContent = data.prev_period;
+                currentPeriodLabel.textContent = data.period;
+                
+                prevPeriodValue.textContent = isCostView ? `€${prevValue.toFixed(2)}` : `${prevValue.toFixed(1)} kWh`;
+                currentPeriodValue.textContent = isCostView ? `€${currentValue.toFixed(2)}` : `${currentValue.toFixed(1)} kWh`;
+
+                prevBar.style.width = `${(prevValue / comparisonMax) * 100}%`;
+                currentBar.style.width = `${(currentValue / comparisonMax) * 100}%`;
+                
+                comparisonText.textContent = data.comparison;
+
+                // Update Cost Breakdown section
+                const averageCostPerKwh = 0.28; // Mock value
+                totalCost.textContent = isCostView ? `€${currentValue.toFixed(2)}` : `€${(currentValue * averageCostPerKwh).toFixed(2)}`;
+                costPerKwh.textContent = `€${averageCostPerKwh.toFixed(2)}`;
+                projectedCost.textContent = `€${(generateMockData(currentDate, 'monthly').cost).toFixed(2)}`; // Mock projection
+                
+                // Update chart
+                if (chartInstance) {
+                    chartInstance.data.labels = chartData.labels;
+                    const dataset = chartInstance.data.datasets[0];
+                    dataset.label = isCostView ? 'Cost (€)' : 'Consumption (kWh)';
+                    dataset.data = isCostView ? chartData.cost : chartData.kwh;
+                    chartInstance.update();
+                }
+            }
+
+            // Event Listeners
+            document.getElementById('time-toggle-group').querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.getElementById('time-toggle-group').querySelectorAll('button').forEach(btn => {
+                        btn.classList.remove('bg-primary-green', 'shadow-md', 'text-neutral-white', 'font-semibold');
+                        btn.classList.add('text-secondary-gray', 'font-medium');
+                    });
+                    button.classList.add('bg-primary-green', 'shadow-md', 'text-neutral-white', 'font-semibold');
+                    button.classList.remove('text-secondary-gray', 'font-medium');
+
+                    currentView = button.dataset.timeframe;
+                    updateData();
+                });
+            });
+
+            prevDateBtn.addEventListener('click', () => {
+                if (currentView === 'daily') currentDate.setDate(currentDate.getDate() - 1);
+                else if (currentView === 'weekly') currentDate.setDate(currentDate.getDate() - 7);
+                else if (currentView === 'monthly') currentDate.setMonth(currentDate.getMonth() - 1);
+                updateData();
+            });
+
+            nextDateBtn.addEventListener('click', () => {
+                if (currentView === 'daily') currentDate.setDate(currentDate.getDate() + 1);
+                else if (currentView === 'weekly') currentDate.setDate(currentDate.getDate() + 7);
+                else if (currentView === 'monthly') currentDate.setMonth(currentDate.getMonth() + 1);
+                updateData();
+            });
+
+            toggleSwitch.addEventListener('change', (e) => {
+                isCostView = e.target.checked;
+                // Update cost/kwh labels on the switch
+                document.getElementById('kwh-label').classList.toggle('text-secondary-gray', isCostView);
+                document.getElementById('kwh-label').classList.toggle('text-neutral-white', !isCostView);
+                document.getElementById('cost-label').classList.toggle('text-secondary-gray', !isCostView);
+                document.getElementById('cost-label').classList.toggle('text-neutral-white', isCostView);
+                updateData();
+            });
+
+            // --- Category Selection Logic ---
+            document.getElementById('category-container').addEventListener('click', (event) => {
+                const categoryButton = event.target.closest('.category-button');
+                if (categoryButton) {
+                    // Remove 'active' class from all buttons
+                    document.querySelectorAll('.category-button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    // Add 'active' class to the clicked button
+                    categoryButton.classList.add('active');
+                    
+                    // You could perform additional actions here, like filtering the chart data
+                    // console.log('Category selected:', categoryButton.dataset.category);
+                }
+            });
+
+            // Initial load
+            createChart();
+            isCostView = toggleSwitch.checked;
+            updateData();
+            
+            // Initialize Lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -32,4 +32,23 @@ document.addEventListener('DOMContentLoaded', () => {
         lowUsageSection.classList.add('hidden');
         highUsageSection.classList.remove('hidden');
     });
+
+    // Highlight active navigation item based on current page
+    const currentPath = window.location.pathname;
+    const navItems = document.querySelectorAll('.nav-item');
+
+    navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && currentPath.includes(href)) {
+            item.classList.add('active');
+            item.classList.remove('text-secondary-gray');
+            item.classList.add('text-neutral-white');
+            item.classList.remove('hover:text-primary-green'); // Remove hover effect for active item
+        } else {
+            item.classList.remove('active');
+            item.classList.remove('text-neutral-white');
+            item.classList.add('text-secondary-gray');
+            item.classList.add('hover:text-primary-green'); // Add hover effect for inactive items
+        }
+    });
 });

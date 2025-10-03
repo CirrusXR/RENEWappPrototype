@@ -1,5 +1,6 @@
+console.log("home.js script started.");
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Your web app's Firebase configuration
@@ -17,19 +18,16 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Function to display user's name
-async function displayUserName(firstName) {
-    const userNameDisplay = document.getElementById('userNameDisplay');
-    if (userNameDisplay) {
-        userNameDisplay.textContent = firstName || 'User';
-    }
-    displayGreeting(); // Call displayGreeting after user name is set
-}
+// Get references to the HTML elements
+const logoutBtn = document.getElementById('logout-btn');
+const dynamicHomeGreeting = document.getElementById('dynamicHomeGreeting');
+const homeUserNameDisplay = document.getElementById('homeUserNameDisplay');
 
-// Function to display personalized greeting based on time of day
-function displayGreeting() {
-    const greetingMessageElement = document.getElementById('greetingMessage');
-    if (!greetingMessageElement) return;
+// Function to display personalized greeting based on time of day for the home page
+function displayHomeGreeting(firstName) {
+    if (!dynamicHomeGreeting) {
+        return;
+    }
 
     const hour = new Date().getHours();
     let greeting = "Hello";
@@ -38,142 +36,142 @@ function displayGreeting() {
         greeting = "Good morning";
     } else if (hour < 18) {
         greeting = "Good afternoon";
-    } else {
+    } else if (hour < 22) {
         greeting = "Good evening";
+    } else {
+        greeting = "Good night";
     }
 
-    greetingMessageElement.textContent = greeting;
+    dynamicHomeGreeting.textContent = greeting;
+    if (homeUserNameDisplay) {
+        homeUserNameDisplay.textContent = firstName || 'User';
+    }
 }
 
 // Listen for authentication state changes
 onAuthStateChanged(auth, async (user) => {
+    console.log("onAuthStateChanged fired. User:", user);
     if (user) {
-        // User is signed in
+        console.log("User is signed in. User UID:", user.uid);
+        console.log("User displayName:", user.displayName);
         let firstName = 'User'; // Default name
 
         if (user.displayName) {
-            // If displayName exists, use the first part as first name
             firstName = user.displayName.split(' ')[0];
-        } else {
-            // Try to fetch from Firestore if displayName is not set
-            const userDocRef = doc(db, "users", user.uid);
-            const userDocSnap = await getDoc(userDocRef);
-            if (userDocSnap.exists()) {
-                const userData = userDocSnap.data();
-                if (userData.firstName) {
-                    firstName = userData.firstName;
+            console.log("User displayName found from auth:", firstName);
+        }
+
+        // Re-enable Firestore fetch for more complete profile data
+        try {
+            console.log("navigator.onLine:", navigator.onLine);
+            if (!navigator.onLine) {
+                console.log("Client is offline. Skipping Firestore fetch.");
+            } else {
+                console.log("Attempting Firestore fetch for user document.");
+                const userDocRef = doc(db, "users", user.uid);
+                console.log("Firestore document path:", userDocRef.path);
+                const userDocSnap = await getDoc(userDocRef);
+
+                if (userDocSnap.exists()) {
+                    const userData = userDocSnap.data();
+                    if (userData.firstName) {
+                        firstName = userData.firstName;
+                        console.log("User firstName from Firestore:", firstName);
+                    } else {
+                        console.log("Firestore document exists, but no firstName field.");
+                    }
+                } else {
+                    console.log("User document does not exist in Firestore for UID:", user.uid);
                 }
             }
+        } catch (error) {
+            console.error("Error fetching user document from Firestore:", error.code, error.message);
         }
-        displayUserName(firstName);
-    } else {
-        // User is out
-        displayUserName('User');
-        // Optionally redirect to login page if not already there
-        // window.location.href = 'index.html';
+        displayHomeGreeting(firstName);
+
+    }
+    else {
+        console.log("User is signed out. Redirecting to index.html");
+        window.location.href = "index.html";
     }
 });
 
-// Live Energy Usage functions
-function updateLiveEnergy(kwh, message, status) {
-    const energyKwhElement = document.getElementById('energy-kwh');
-    const energyMessageElement = document.getElementById('energy-message');
-    const liveEnergyCard = document.getElementById('live-energy-card');
-    const homeIcon = document.getElementById('homeIcon'); // Get the home icon element
-    const liveEnergyTitle = document.getElementById('live-energy-title'); // Get the title element
+// Logout functionality
+logoutBtn.addEventListener('click', () => {
+    signOut(auth).then(() => {
+        // Sign-out successful.
+        console.log("User signed out successfully.");
+        window.location.href = "index.html";
+    }).catch((error) => {
+        // An error happened.
+        console.error("Error signing out: ", error);
+        alert("Error signing out. Please try again.");
+    });
+});
 
-    if (energyKwhElement) energyKwhElement.textContent = kwh;
-    if (energyMessageElement) energyMessageElement.textContent = message;
+// Dummy data and functions for the home page elements
+// These would ideally be fetched from Firestore or other services
 
-    // Remove existing pulse classes from both the card and the icon
-    liveEnergyCard.classList.remove('pulse-green', 'pulse-yellow', 'pulse-red');
-    if (homeIcon) {
-        homeIcon.classList.remove('pulse-green', 'pulse-yellow', 'pulse-red');
-    }
-
-    // Add new pulse class based on status to both the card and the icon
-    if (status === 'low') {
-        liveEnergyCard.classList.add('pulse-green');
-        if (homeIcon) homeIcon.classList.add('pulse-green');
-        if (liveEnergyTitle) liveEnergyTitle.textContent = 'Low energy cost now.';
-    } else if (status === 'medium') {
-        liveEnergyCard.classList.add('pulse-yellow');
-        if (homeIcon) homeIcon.classList.add('pulse-yellow');
-        if (liveEnergyTitle) liveEnergyTitle.textContent = 'Moderate energy cost.';
-    } else if (status === 'high') {
-        liveEnergyCard.classList.add('pulse-red');
-        if (homeIcon) homeIcon.classList.add('pulse-red');
-        if (liveEnergyTitle) liveEnergyTitle.textContent = 'High energy cost.';
-    }
-}
-
-// Simulate real-time energy updates (replace with actual data fetching)
-const costPerKwh = 0.30; // Example: 0.30 Euros per kWh
-
-setInterval(() => {
-    const randomKwh = (Math.random() * 2 + 0.5); // Between 0.5 and 2.5
-    const cost = (randomKwh * costPerKwh).toFixed(2); // Calculate cost and format to 2 decimal places
-    let message = '';
-    let status = '';
-
-    if (cost < (1.0 * costPerKwh)) { // Adjusted threshold for low cost
-        status = 'low';
-        message = 'Best time to use your devices.';
-    } else if (cost < (2.0 * costPerKwh)) { // Adjusted threshold for medium cost
-        status = 'medium';
-        message = 'Consider shifting heavy usage.';
-    } else {
-        status = 'high';
-        message = 'Avoid using non-essential devices.';
-    }
-    updateLiveEnergy(cost, message, status);
-}, 8000); // Update every 8 seconds
-
-// Current Bill Cycle Usage Toggle Logic
 document.addEventListener('DOMContentLoaded', () => {
+    // Bill Cycle Usage Toggle
     const usageToggle = document.getElementById('usageToggle');
     const billCycleValue = document.getElementById('billCycleValue');
     const billCycleUnit = document.getElementById('billCycleUnit');
-    const billCycleProgressBar = document.getElementById('billCycleProgressBar');
 
-    // Static values for demonstration
-    const currentKwhUsage = 250;
-    const currentCostUsage = 75.00; // Example: 250 kWh * $0.30/kWh
-
-    // Max values for progress bar calculation
-    const maxKwhUsage = 500; // Example max kWh for the billing period
-    const maxCostUsage = 150.00; // Example max cost for the billing period (500 kWh * 0.30 €/kWh)
-
-    function updateBillCycleDisplay() {
-        let percentage = 0;
-        let currentUsage = 0;
-        let maxUsage = 0;
-
-        if (usageToggle.checked) { // If checked, show cost
-            currentUsage = currentCostUsage;
-            maxUsage = maxCostUsage;
-            billCycleValue.textContent = `€${currentUsage.toFixed(2)}`;
-            billCycleUnit.textContent = 'Cost';
-        } else { // Show kWh
-            currentUsage = currentKwhUsage;
-            maxUsage = maxKwhUsage;
-            billCycleValue.textContent = currentUsage;
-            billCycleUnit.textContent = 'kWh';
+    usageToggle.addEventListener('change', () => {
+        if (usageToggle.checked) {
+            billCycleValue.textContent = "€50.00"; // Example cost
+            billCycleUnit.textContent = "€";
+            billCycleValue.classList.remove('text-primary-green');
+            billCycleValue.classList.add('text-accent-yellow');
         }
-
-        percentage = (currentUsage / maxUsage) * 100;
-        percentage = Math.min(Math.max(percentage, 0), 100); // Clamp between 0 and 100
-
-        if (billCycleProgressBar) {
-            billCycleProgressBar.style.width = `${percentage}%`;
+        else {
+            billCycleValue.textContent = "250"; // Example kWh
+            billCycleUnit.textContent = "kWh";
+            billCycleValue.classList.remove('text-accent-yellow');
+            billCycleValue.classList.add('text-primary-green');
         }
-    }
+    });
 
-    // Add event listener for the toggle switch
-    if (usageToggle) {
-        usageToggle.addEventListener('change', updateBillCycleDisplay);
-    }
+    // Live Energy Usage Card Pulsating Effect
+    const liveEnergyCard = document.getElementById('live-energy-card');
+    const energyKwh = document.getElementById('energy-kwh');
+    const energyMessage = document.getElementById('energy-message');
+    const homeIcon = document.getElementById('homeIcon');
+    const liveEnergyTitle = document.getElementById('live-energy-title');
 
-    // Set initial display
-    updateBillCycleDisplay();
+    // Simulate live data updates
+    setInterval(() => {
+        const currentUsage = (Math.random() * 2 + 0.5).toFixed(1); // Between 0.5 and 2.5
+        energyKwh.textContent = currentUsage;
+
+        // Update card style based on usage
+        liveEnergyCard.classList.remove('pulse-green', 'pulse-yellow', 'pulse-red');
+        homeIcon.classList.remove('text-primary-green', 'text-accent-yellow', 'text-accent-red');
+        energyKwh.classList.remove('text-primary-green', 'text-accent-yellow', 'text-accent-red');
+        liveEnergyTitle.classList.remove('text-primary-green', 'text-accent-yellow', 'text-accent-red');
+
+        if (currentUsage < 1.0) {
+            liveEnergyCard.classList.add('pulse-green');
+            homeIcon.classList.add('text-primary-green');
+            energyKwh.classList.add('text-primary-green');
+            liveEnergyTitle.classList.add('text-primary-green');
+            liveEnergyTitle.textContent = "Energy cost is low";
+            energyMessage.innerHTML = "Best time to use your devices.";
+        } else if (currentUsage < 2.0) {
+            liveEnergyCard.classList.add('pulse-yellow');
+            homeIcon.classList.add('text-accent-yellow');
+            energyKwh.classList.add('text-accent-yellow');
+            liveEnergyTitle.classList.add('text-accent-yellow');
+            liveEnergyTitle.textContent = "Energy cost is moderate";
+            energyMessage.innerHTML = "Consider using high-energy devices later.";
+        } else {
+            liveEnergyCard.classList.add('pulse-red');
+            homeIcon.classList.add('text-accent-red');
+            energyKwh.classList.add('text-accent-red');
+            liveEnergyTitle.classList.add('text-accent-red');
+            liveEnergyTitle.textContent = "Energy cost is high";
+            energyMessage.innerHTML = "Avoid using high-energy devices now.";
+        }
+    }, 5000); // Update every 5 seconds
 });
